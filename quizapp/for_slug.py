@@ -10,5 +10,6 @@ alphabet = {
     'я': 'ya'
 }
 
+
 def slugify(s):
     return django_slugify(''.join(alphabet.get(w, w) for w in s.lower()))

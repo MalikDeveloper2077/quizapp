@@ -9,7 +9,7 @@ LEVEL_CHOICES = [
     ('Легко', 'easy'),
     ('Средне', 'normal'),
     ('Сложно', 'hard'),
-    ('Очень сложно', 'extreme'),
+    ('Экстремально', 'extreme'),
 ]
 
 
@@ -39,6 +39,9 @@ class Quiz(models.Model):
         blank=True,
         null=True
     )
+
+    def get_likes_count(self):
+        return self.likes.count()
 
     def __str__(self):
         return self.title
