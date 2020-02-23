@@ -24,19 +24,25 @@
           {% endif %}
         </p>
 
-        <p class="quiz__likes">
-          {% if user in quiz.likes.all %}
-            <i class="fas fa-heart liked-heart"></i>
-          {% else %}
-            <i class="far fa-heart"></i>
-          {% endif %}
-          {{ quiz.get_likes_count|intcomma }}
+        <p class="quiz__parameters">
+          <span class="quiz__likes">
+            {% if user in quiz.likes.all %}
+              <i class="fas fa-heart liked-heart"></i>
+            {% else %}
+              <i class="far fa-heart"></i>
+            {% endif %}
+            {{ quiz.get_likes_count|intcomma }}
+          </span>
+
+          <span class="quiz__comments ml-3">
+            <i class="far fa-comment"></i> {{ quiz.get_comments_count }}
+          </span>
         </p>
 
-        <span class="quiz__views pr-3">
-          <small><i class="far fa-eye"></i> {{ quiz.views|intcomma }}</small>
+        <span class="quiz__views quiz__views-home pr-3">
+          <small><i class="far fa-eye fa-eye-home"></i> {{ quiz.views|intcomma }}</small>
         </span>|
-        <span class="quiz__date pl-2">
+        <span class="quiz__date quiz__date-home pl-2">
           <small>{{ quiz.date|naturaltime }}</small>
         </span><br>
 
@@ -53,7 +59,9 @@
         <button class="btn quiz__category">{{ quiz.category }}</button>
         {% endif %}
 
-        <a href="#" class="mt-2 btn btn-join btn-block">Пройти</a>
+        <a href="{{ quiz.get_absolute_url }}" class="mt-2 btn btn-join btn-block">
+          Пройти
+        </a>
       </div>
       {% endfor %}
 

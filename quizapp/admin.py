@@ -1,10 +1,15 @@
 from django.contrib import admin
 
-from .models import Quiz, Category, Question, QuestionAnswer
+from .models import Quiz, Category, Question, QuestionAnswer, Comment
 
 
 class QuestionAnswerInline(admin.TabularInline):
     model = QuestionAnswer
+    extra = 1
+
+
+class CommentInline(admin.TabularInline):
+    model = Comment
     extra = 1
 
 
@@ -21,6 +26,8 @@ class QuizAdmin(admin.ModelAdmin):
         ('Показатели', {'fields': ['views', 'likes', 'completed']})
     ]
 
+    inlines = [CommentInline]
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -30,6 +37,21 @@ class CategoryAdmin(admin.ModelAdmin):
 
     fieldsets = [
         ('Главное', {'fields': ['name']}),
+    ]
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    """Manage comment model (for quizzes)"""
+    list_display = ('body', 'author', 'quiz', 'date',)
+    list_filter = ('date', 'quiz',)
+    search_fields = ('body',)
+    readonly_fields = ('date',)
+
+    fieldsets = [
+        ('Главное', {'fields': ['body', 'date']}),
+        ('Автор', {'fields': ['author']}),
+        ('Викторина', {'fields': ['quiz']})
     ]
 
 

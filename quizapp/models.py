@@ -2,6 +2,8 @@ from time import time
 
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
+
 from .for_slug import slugify as my_slugify
 
 
@@ -48,8 +50,17 @@ class Quiz(models.Model):
         null=True
     )
 
+    def get_absolute_url(self):
+        return reverse('quiz-detail', kwargs={'slug': self.slug})
+
     def get_likes_count(self):
         return self.likes.count()
+
+    def get_completed_count(self):
+        return self.completed.count()
+
+    def get_comments_count(self):
+        return self.comments.count()
 
     def __str__(self):
         return self.title
@@ -73,7 +84,7 @@ class Quiz(models.Model):
 
 
 class Category(models.Model):
-    """Category for the questions"""
+    """Category for the quiz"""
     name = models.CharField('Имя категории', max_length=30)
 
     def __str__(self):
@@ -82,6 +93,32 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+
+
+class Comment(models.Model):
+    """Comment for the quiz"""
+    quiz = models.ForeignKey(
+        Quiz,
+        on_delete=models.CASCADE,
+        verbose_name='Викторина',
+        related_name='comments'
+    )
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        verbose_name='Автор',
+        related_name='comments'
+    )
+    body = models.TextField('Текст')
+    date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+
+    def __str__(self):
+        return self.body
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+        ordering = ['-date']
 
 
 class Question(models.Model):

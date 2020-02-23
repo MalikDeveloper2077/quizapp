@@ -19,51 +19,67 @@
     {% block links %}{% endblock %}
   </head>
   <body>
-    <header>
-      <div class="container">
-        <div class="header__wrapper">
+    <div class="wrap">
 
-          <nav class="header__nav">
-            <div class="nav__logo">
-              <img class="logo__img" src="{% static 'img/logo.png' %}">
+      <header>
+        <div class="container">
+          <div class="header__wrapper">
+
+            <nav class="header__nav">
+              <div class="nav__logo">
+                <img class="logo__img" src="{% static 'img/logo.png' %}">
+              </div>
+
+              <a href="/" class="nav__item
+              {% if active == 'list' %}active{% endif %}">
+                Главная
+              </a>
+
+              <a href="#" class="nav__item
+              {% if active == 'top' %}active{% endif %}">
+                Топ викторин
+              </a>
+
+              <a href="#" class="nav__item
+              {% if active == 'my_quizzes' %}active{% endif %}">
+                Мои викторины
+              </a>
+            </nav>
+
+            <div class="header__profile">
+              <a href="#" class="profile__btn-create btn mr-4">
+                Создать <i class="fas fa-plus ml-1"></i>
+              </a>
+              <img class="profile__img" src="{% static 'img/testuser.png' %}">
+              <i class="fas fa-angle-down ml-2"></i>
+              <span class="profile__name">{{ user.username }}</span>
             </div>
-            <a href="#" class="nav__item active">Главная</li>
-            <a href="#" class="nav__item">Топ викторин</li>
-            <a href="#" class="nav__item">Мои викторины</li>
-          </nav>
 
-          <div class="header__profile">
-            <a href="#" class="profile__btn-create btn mr-4">
-              Создать <i class="fas fa-plus ml-1"></i>
-            </a>
-            <img class="profile__img" src="{% static 'img/testuser.png' %}">
-            <i class="fas fa-angle-down ml-2"></i>
-            <span class="profile__name">{{ user.username }}</span>
           </div>
-
         </div>
-      </div>
-    </header>
+      </header>
 
-    <div class="content">
-      {% block content %}
-      {% endblock %}
+      <div class="content">
+        {% block content %}
+        {% endblock %}
+      </div>
+
+      <footer>
+        <div class="container">
+          <div class="footer__wrapper">
+
+            <nav class="footer__nav">
+              <li class="footer-nav__item">Политика</li>
+              <li class="footer-nav__item">Правила</li>
+              <li class="footer-nav__item">Пользование</li>
+            </nav>
+
+            <div class="footer__rules">@ Все права защищены {% now "Y" %}</div>
+
+          </div>
+        </div>
+      </footer>
+
     </div>
-
-    <footer>
-      <div class="container">
-        <div class="footer__wrapper">
-
-          <nav class="footer__nav">
-            <li class="footer-nav__item">Политика</li>
-            <li class="footer-nav__item">Правила</li>
-            <li class="footer-nav__item">Пользование</li>
-          </nav>
-
-          <div class="footer__rules">@ Все права защищены {% now "Y" %}</div>
-
-        </div>
-      </div>
-    </footer>
   </body>
 </html>

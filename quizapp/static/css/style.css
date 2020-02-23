@@ -7,9 +7,9 @@ p {
 
 .quiz {
   margin-bottom: 40px;
-  -webkit-box-shadow: 0 6px 13px 0px rgba(0,0,0,0.4);
-  -moz-box-shadow: 0 6px 13px 0px rgba(0,0,0,0.4);
-  box-shadow: 0 6px 13px 0px rgba(0,0,0,0.4);
+  -webkit-box-shadow: 0 6px 12px 0px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0 6px 12px 0px rgba(0,0,0,0.3);
+  box-shadow: 0 6px 12px 0px rgba(0,0,0,0.3);
   padding: 15px 18px;
   border-radius: 6px;
 }
@@ -40,12 +40,12 @@ p {
   color: #fff;
 }
 
-.quiz__likes {
+.quiz__likes, .quiz__comments {
   margin-top: 15px;
   font-size: 16px;
 }
 
-.quiz__views {
+.quiz__views-home {
   display: inline-block;
   margin-bottom: 8px;
 }
@@ -65,14 +65,14 @@ p {
   box-shadow: none;
 }
 
-.quiz__date {
+.quiz__date-home {
   margin-left: 5px;
 }
 
-.fa-eye {
-  font-size: 13px;
+.fa-eye-home {
   margin-right: 4px;
-  color: #c4c2c2
+  color: #c4c2c2;
+  font-size: 13px;
 }
 
 .liked-heart {
@@ -107,7 +107,6 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 30px;
 }
 
 .active-pagination {
@@ -140,3 +139,73 @@ p {
 
 /* Detail Page
 =============*/
+
+.detail-container {
+  -webkit-box-shadow: 0 4px 12px 0px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0 4px 12px 0px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 12px 0px rgba(0,0,0,0.3);
+  padding: 15px 100px 25px 100px;
+  margin-bottom: 20px;
+}
+
+
+/* Quiz detail section */
+
+.quiz-detail__photo {
+  width: 100%;
+  margin-bottom: 30px;
+  border-radius: 5px;
+}
+
+.quiz-detail__title {
+  text-align: center;
+  margin-bottom: 23px;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+.quiz__likes-detail {
+  display: inline-block;
+}
+
+.quiz-detail__btn-start {
+  margin-top: 20px;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 60px;
+}
+
+.btn-start {
+  padding: 8px 55px;
+}
+
+.quiz__likes-detail, .quiz__comments-detail {
+  font-size: 18px;
+}
+
+
+/* Comment section */
+
+.comment {
+  margin-bottom: 10px;
+}
+
+.comment__username-wrap {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  justify-content: space-between;
+}
+
+.comment__date {
+  color: #bdbdbd;
+}
+
+.user__img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 6px;
+}

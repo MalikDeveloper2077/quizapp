@@ -1,20 +1,41 @@
+html, body {
+  height: 100%;
+}
+
 body {
   background-color: #212121;
   color: #fff;
   font-family: 'Roboto', sans-serif;
 }
 
+hr {
+  background-color: #34264a;
+}
+
 
 /* Header and footer
 ====================*/
 
+.wrap {
+  min-height: 100%;
+  position: relative;
+}
+
 header, footer {
-  padding: 7px 0;
   background-color: #34264a;
 }
 
 header {
   margin-bottom: 20px;
+  padding: 7px 0;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 0;
 }
 
 .header__wrapper, .footer__wrapper {
@@ -99,4 +120,12 @@ header {
 
 .profile__name {
   margin-left: 15px;
+}
+
+
+/* Content
+=========*/
+
+.content {
+  padding-bottom: 50px;
 }
