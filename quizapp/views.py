@@ -8,3 +8,4 @@ class QuizList(ListView):
     model = Quiz
     template_name = 'quizapp/home.html'
     context_object_name = 'quizzes'
+    paginate_by = 15

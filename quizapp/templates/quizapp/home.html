@@ -15,7 +15,7 @@
       {% for quiz in quizzes %}
       <div class="quiz">
         <h4 class="quiz__title">{{ quiz.title }}</h4>
-        
+
         <p class="quiz__body">
           {% if quiz.body|length > 150 %}
             {{ quiz.body|slice:':150' }}...
@@ -23,15 +23,6 @@
             {{ quiz.body }}
           {% endif %}
         </p>
-
-        <button type="button" class="quiz__level btn
-        {% if quiz.level == 'Легко' %}btn-success{% endif %}
-        {% if quiz.level == 'Средне' %}btn-primary{% endif %}
-        {% if quiz.level == 'Сложно' %}btn-hard{% endif %}
-        {% if quiz.level == 'Экстремально' %}btn-danger{% endif %}
-        ">
-          {{ quiz.level }}
-        </button>
 
         <p class="quiz__likes">
           {% if user in quiz.likes.all %}
@@ -45,11 +36,70 @@
         <span class="quiz__views pr-3">
           <small><i class="far fa-eye"></i> {{ quiz.views|intcomma }}</small>
         </span>|
-        <span class="quiz__date pl-3"><small>{{ quiz.date|naturaltime }}</small></span><br>
+        <span class="quiz__date pl-2">
+          <small>{{ quiz.date|naturaltime }}</small>
+        </span><br>
 
-        <a href="#" class="mt-3 btn btn-join btn-block">Пройти</a>
+        <button type="button" class="quiz__level btn
+        {% if quiz.level == 'Легко' %}btn-success{% endif %}
+        {% if quiz.level == 'Средне' %}btn-primary{% endif %}
+        {% if quiz.level == 'Сложно' %}btn-hard{% endif %}
+        {% if quiz.level == 'Экстремально' %}btn-danger{% endif %}
+        ">
+          {{ quiz.level }}
+        </button>
+
+        {% if quiz.category %}
+        <button class="btn quiz__category">{{ quiz.category }}</button>
+        {% endif %}
+
+        <a href="#" class="mt-2 btn btn-join btn-block">Пройти</a>
       </div>
       {% endfor %}
+
+      {% if is_paginated %}
+        <nav>
+          <ul class="pagination">
+            {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page=1">
+                  &laquo;
+                </a>
+              </li>
+
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                  &lt;
+                </a>
+              </li>
+            {% endif %}
+
+            {% for n in page_obj.paginator.page_range %}
+              {% if n > page_obj.number|add:-4 and n < page_obj.number|add:4 %}
+                <li class="page-item">
+                  <a class="page-link {% if n == page_obj.number %}
+                  active-pagination {% else %}no-active {% endif %}"
+                  href='?page={{ n }}'>{{ n }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                  &gt;
+                </a>
+              </li>
+
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                  &raquo;
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      {% endif %}
 
     </div>
 

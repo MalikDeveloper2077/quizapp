@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Quiz, Question, QuestionAnswer
+from .models import Quiz, Category, Question, QuestionAnswer
 
 
 class QuestionAnswerInline(admin.TabularInline):
@@ -12,13 +12,24 @@ class QuestionAnswerInline(admin.TabularInline):
 class QuizAdmin(admin.ModelAdmin):
     """Manage Quiz model"""
     list_display = ('title', 'level', 'views', 'date',)
-    list_filter = ('date', 'level',)
+    list_filter = ('date', 'level', 'category')
     search_fields = ['title', 'body']
     readonly_fields = ('date',)
 
     fieldsets = [
-        ('Главное', {'fields': ['title', 'body', 'slug', 'date', 'level', 'photo']}),
+        ('Главное', {'fields': ['title', 'body', 'slug', 'date', 'level', 'category', 'photo']}),
         ('Показатели', {'fields': ['views', 'likes', 'completed']})
+    ]
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    """Manage category model (for quizzes)"""
+    list_display = ('name',)
+    search_fields = ('name',)
+
+    fieldsets = [
+        ('Главное', {'fields': ['name']}),
     ]
 
 

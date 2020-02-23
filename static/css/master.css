@@ -44,6 +44,12 @@ header {
 
 .nav__item {
   font-size: 17px;
+  transition: 0.4s;
+}
+
+.nav__item:hover {
+  color: #fff;
+  text-decoration: none;
 }
 
 .footer-nav__item, .footer__rules {
@@ -93,31 +99,4 @@ header {
 
 .profile__name {
   margin-left: 15px;
-}
-
-
-/* For Apps
-===========*/
-
-.liked-heart {
-  color: #f54545 !important;
-}
-
-.btn-join {
-  background-color: #34264a;
-  outline: none;
-  border: 0;
-  padding: 7px 20px;
-  color: #fff;
-}
-
-.btn-join:focus {
-  -webkit-box-shadow: 0 0 0 .2rem #34264a;
-  -moz-box-shadow: 0 0 0 .2rem #34264a;
-  box-shadow: 0 0 0 .2rem #34264a;
-}
-
-.btn-join:hover {
-  color: #fff;
-  background-color: #4b376b;
 }

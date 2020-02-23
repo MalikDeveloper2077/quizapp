@@ -21,6 +21,14 @@ class Quiz(models.Model):
     date = models.DateTimeField('Дата создания', auto_now_add=True)
     views = models.IntegerField('Просмотры', default=0)
     level = models.CharField('Уровень', max_length=20, choices=LEVEL_CHOICES)
+    category = models.ForeignKey(
+        'Category',
+        on_delete=models.PROTECT,
+        verbose_name='Категория',
+        related_name='quiz',
+        blank=True,
+        null=True
+    )
     likes = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         verbose_name="Понравилось",
@@ -62,6 +70,18 @@ class Quiz(models.Model):
         verbose_name = 'Викторина'
         verbose_name_plural = 'Викторины'
         ordering = ['-date']
+
+
+class Category(models.Model):
+    """Category for the questions"""
+    name = models.CharField('Имя категории', max_length=30)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
 
 
 class Question(models.Model):

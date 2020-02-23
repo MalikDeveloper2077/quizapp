@@ -19,10 +19,11 @@ p {
   margin-bottom: 15px;
 }
 
-.quiz__level {
+.quiz__level, .quiz__category {
   padding: .105rem .75rem;
   font-size: 14px;
   margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .quiz__level:focus {
@@ -44,10 +45,96 @@ p {
   font-size: 16px;
 }
 
+.quiz__views {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.quiz__category {
+  background-color: #1c1c1c;
+  color: #fff;
+  margin-left: 8px;
+  border: 1px solid #1c1c1c;
+}
+
+.quiz__category:hover {
+  color: #fff;
+}
+
+.quiz__category:focus {
+  box-shadow: none;
+}
+
+.quiz__date {
+  margin-left: 5px;
+}
+
 .fa-eye {
   font-size: 13px;
   margin-right: 4px;
   color: #c4c2c2
+}
+
+.liked-heart {
+  color: #f54545 !important;
+}
+
+.btn-join {
+  background-color: #34264a;
+  outline: none;
+  border: 0;
+  padding: 7px 20px;
+  color: #fff;
+}
+
+.btn-join:focus {
+  -webkit-box-shadow: 0 0 0 .2rem #34264a;
+  -moz-box-shadow: 0 0 0 .2rem #34264a;
+  box-shadow: 0 0 0 .2rem #34264a;
+}
+
+.btn-join:hover {
+  color: #fff;
+  background-color: #4b376b;
+}
+
+
+/* Pagination */
+
+.pagination {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.active-pagination {
+  background-color: #bf1b91 !important;
+  color: #fff;
+  border: 0;
+  transition: 0.4s;
+}
+
+.active-pagination:hover {
+  background-color: #a3177b !important;
+  color: #fff;
+}
+
+.page-link {
+  border: 0;
+  color: #fff;
+  background-color: #34264a;
+}
+
+.page-link:hover {
+  color: #fff;
+  background-color: #4b376b;
+}
+
+.page-link:focus {
+  box-shadow: none;
 }
 
 
