@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
+
 {% load static %}
 {% load humanize %}
+
 {% block title %}Главная{% endblock %}
+
 {% block links %}
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock %}
@@ -14,15 +17,48 @@
 
       {% for quiz in quizzes %}
       <div class="quiz">
-        <h4 class="quiz__title">{{ quiz.title }}</h4>
+
+        <div class="quiz__usertitle-wrap">
+          <h4 class="quiz__title">{{ quiz.title }}</h4>
+
+          <div class="quiz__user">
+            <img src="/static/img/testuser.png" class="user__img" alt="Photo">
+            <span class="user__username">{{ quiz.author.username }}</span>
+          </div>
+        </div>
+
+        <span class="quiz__views quiz__views-home pr-2">
+          <small><i class="far fa-eye fa-eye-home"></i> {{ quiz.views|intcomma }}</small>
+        </span>|
+        <span class="quiz__date quiz__date-home">
+          <small>{{ quiz.date|naturaltime }}</small>
+        </span><br>
 
         <p class="quiz__body">
           {% if quiz.body|length > 150 %}
-            {{ quiz.body|slice:':150' }}...
+            {{ quiz.body|slice:':150' }}...<br />
+            <a href="{{ quiz.get_absolute_url }}">Читать полностью</a>
           {% else %}
             {{ quiz.body }}
           {% endif %}
         </p>
+
+        {% if quiz.photo %}
+        <img src="{{ quiz.photo.url }}" class="quiz__photo" alt="Photo">
+        {% endif %}
+
+        <button type="button" class="quiz__level btn
+        {% if quiz.level == 'Легко' %}btn-success{% endif %}
+        {% if quiz.level == 'Средне' %}btn-primary{% endif %}
+        {% if quiz.level == 'Сложно' %}btn-hard{% endif %}
+        {% if quiz.level == 'Экстремально' %}btn-danger{% endif %}
+        ">
+          {{ quiz.level }}
+        </button>
+
+        {% if quiz.category %}
+        <button class="btn quiz__category">{{ quiz.category }}</button>
+        {% endif %}
 
         <p class="quiz__parameters">
           <span class="quiz__likes">
@@ -39,29 +75,10 @@
           </span>
         </p>
 
-        <span class="quiz__views quiz__views-home pr-3">
-          <small><i class="far fa-eye fa-eye-home"></i> {{ quiz.views|intcomma }}</small>
-        </span>|
-        <span class="quiz__date quiz__date-home pl-2">
-          <small>{{ quiz.date|naturaltime }}</small>
-        </span><br>
-
-        <button type="button" class="quiz__level btn
-        {% if quiz.level == 'Легко' %}btn-success{% endif %}
-        {% if quiz.level == 'Средне' %}btn-primary{% endif %}
-        {% if quiz.level == 'Сложно' %}btn-hard{% endif %}
-        {% if quiz.level == 'Экстремально' %}btn-danger{% endif %}
-        ">
-          {{ quiz.level }}
-        </button>
-
-        {% if quiz.category %}
-        <button class="btn quiz__category">{{ quiz.category }}</button>
-        {% endif %}
-
         <a href="{{ quiz.get_absolute_url }}" class="mt-2 btn btn-join btn-block">
           Пройти
         </a>
+
       </div>
       {% endfor %}
 

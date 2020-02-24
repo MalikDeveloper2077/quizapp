@@ -23,6 +23,14 @@ class Quiz(models.Model):
     date = models.DateTimeField('Дата создания', auto_now_add=True)
     views = models.IntegerField('Просмотры', default=0)
     level = models.CharField('Уровень', max_length=20, choices=LEVEL_CHOICES)
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='quizzes',
+        verbose_name='Автор',
+        blank=True,
+        null=True
+    )
     category = models.ForeignKey(
         'Category',
         on_delete=models.PROTECT,
@@ -44,8 +52,8 @@ class Quiz(models.Model):
         blank=True
     )
     photo = models.ImageField(
-        'Картинка',
-        upload_to='main_quiz_photos/%Y/%m/%d',
+        'Фото',
+        upload_to='main_quiz_photos/%Y/',
         blank=True,
         null=True
     )
