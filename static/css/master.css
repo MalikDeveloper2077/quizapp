@@ -14,7 +14,7 @@ hr {
 
 input[type=text], input[type=file], select, option, textarea {
   color: #fff !important;
-  background-color: #171717 !important;
+  background-color: #262626 !important;
   border: 0 !important;
 }
 
@@ -125,8 +125,8 @@ footer {
 }
 
 .profile__btn-create:focus {
-  -webkit-box-shadow: 0 0 0 .2rem #34264a;
-  -moz-box-shadow: 0 0 0 .2rem #34264a;
+  -webkit-box-shadow: 0 0 0 .2rem #871467;
+  -moz-box-shadow: 0 0 0 .2rem #871467;
   box-shadow: 0 0 0 .2rem #871467;
 }
 

@@ -22,7 +22,8 @@ class QuizAdmin(admin.ModelAdmin):
     readonly_fields = ('date',)
 
     fieldsets = [
-        ('Главное', {'fields': ['title', 'body', 'slug', 'date', 'level', 'category', 'photo']}),
+        ('Главное', {'fields': ['title', 'body', 'date', 'slug', 'level', 'category', 'photo']}),
+        ('Автор', {'fields': ['author']}),
         ('Показатели', {'fields': ['views', 'likes', 'completed']})
     ]
 

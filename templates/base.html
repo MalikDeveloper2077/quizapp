@@ -47,7 +47,7 @@
             </nav>
 
             <div class="header__profile">
-              <a href="{% url 'quiz-create' %}" 
+              <a href="{% url 'quiz-create' %}"
               class="profile__btn-create btn mr-4">
                 Создать <i class="fas fa-plus ml-1"></i>
               </a>
@@ -85,5 +85,8 @@
       </footer>
 
     </div>
+
+    {% block js %}
+    {% endblock %}
   </body>
 </html>

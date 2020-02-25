@@ -1,5 +1,3 @@
-from time import time
-
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
@@ -17,7 +15,7 @@ LEVEL_CHOICES = [
 
 class Quiz(models.Model):
     """Quiz model"""
-    slug = models.SlugField('Url-адрес', max_length=50, blank=True)
+    slug = models.SlugField('Url-адрес', max_length=60)
     title = models.CharField('Название', max_length=50)
     body = models.TextField('Описание', blank=True)
     date = models.DateTimeField('Дата создания', auto_now_add=True)
@@ -61,6 +59,12 @@ class Quiz(models.Model):
     def get_absolute_url(self):
         return reverse('quiz-detail', kwargs={'slug': self.slug})
 
+    def get_update_url(self):
+        return reverse('quiz-update', kwargs={'slug': self.slug})
+
+    def get_delete_api_url(self):
+        return reverse('quiz-delete-api', kwargs={'slug': self.slug})
+
     def get_likes_count(self):
         return self.likes.count()
 
@@ -75,15 +79,9 @@ class Quiz(models.Model):
 
     def save(self, *args, **kwargs):
         """Use the custom slugfiy (for_slug.py)"""
-        if not self.slug:
-            slug = my_slugify(self.title)
-            exists = Quiz.objects.filter(slug=slug).exists()
-
-            if exists:
-                slug += f'-{str(int(time()))}'
-
-            self.slug = slug
-            super().save(*args, **kwargs)
+        slug = my_slugify(self.title)
+        self.slug = slug + f'-{self.id}'
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Викторина'
