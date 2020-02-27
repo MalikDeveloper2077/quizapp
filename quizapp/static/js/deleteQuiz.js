@@ -1,3 +1,5 @@
+// Show modal and delete a quiz
+
 let modal = document.querySelector('.modal');
 let btns = document.querySelectorAll('.list__item_delete');
 let close = document.querySelector('.modal__close');
@@ -28,15 +30,16 @@ window.onclick = function(e) {
 }
 
 // Ajax to delete the quiz
-let btn = document.querySelector('.modal__btn_delete');
+let csrf_token = $('input[name=csrfmiddlewaretoken]').val();
 
-btn.addEventListener('click', function(e) {
+$(document).on('submit', '#delete__form', function(e) {
     e.preventDefault();
 
     $.ajax({
-        type: 'GET',
+        type: 'DELETE',
         url: `api/quiz/delete/${slug}/`,
         data: {},
+        headers:{"X-CSRFToken": csrf_token},
         success: function(data) {
             quiz.style.display = 'none';
         },

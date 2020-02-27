@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load humanize %}
+{% load crispy_forms_tags %}
 
 {% block title %}{{ quiz.title }}{% endblock %}
 
@@ -52,9 +53,64 @@
           <i class="far fa-comment"></i> {{ quiz.get_comments_count }}
         </span>
 
+        <span class="quiz__bookmarks ml-3">
+          {% if user in quiz.get_bookmarks_users %}
+            <i class="fas fa-star bookmarked"></i>
+          {% else %}
+            <i class="far fa-star"></i>
+          {% endif %}
+          {{ quiz.get_bookmarks_count }}
+        </span>
+
         <div class="quiz-detail__btn-start">
           <a href="#" class="btn btn-join btn-start">Начать</a>
         </div>
+
+        <!-- Comments section -->
+        <section class="comments">
+          {% if user.is_authenticated %}
+            <form class="comments__form" data-slug="{{ quiz.slug }}" method="post">
+              {% csrf_token %}
+              <div class="form__wrap">
+                {{ form|crispy }}
+                <button type="submit" class="form__btn">
+                  <i class="fas fa-paper-plane form__submit"></i>
+                </button>
+              </div>
+            </form>
+          {% else %}
+          <a href="#">Зарегистрируйтесь, чтобы написать комментарий</a>
+          {% endif %}
+
+          <div class="comment__objects">
+            {% for comment in quiz.comments.all %}
+            <div class="comment">
+
+              <hr>
+              <div class="comment__username-wrap">
+                <div class="user">
+                  <img class="user__img" src="/static/img/testuser.png" alt="Photo">
+                  <span class="user__username">{{ comment.author.username }}</span>
+                </div>
+
+                <p class="comment__date">{{ comment.date|naturaltime }}</p>
+
+                <form id="delete__form" method="POST"
+                data-pk="{{ comment.pk }}">
+                  {% csrf_token %}
+                  <button type="submit" class="date-delete__delete">
+                    <i class="fas fa-trash"></i>
+                  </a>
+                </form>
+              </div>
+
+              <p class="comment__body">{{ comment.body }}</p>
+
+            </div>
+            {% endfor %}
+          </div>
+        </section>
+        <!-- End comments section -->
 
       </div>
       <!-- End left column -->
@@ -83,26 +139,64 @@
     </div>
   </section>
 
-  <!-- Comments section -->
-  <section class="comments">
-    {% for comment in quiz.comments.all %}
-    <hr>
-    <div class="comment">
-
-      <div class="comment__username-wrap">
-        <div class="user">
-          <img class="user__img" src="/static/img/testuser.png" alt="Photo">
-          <span class="user__username">{{ comment.author.username }}</span>
-        </div>
-
-        <p class="comment__date">{{ comment.date|naturaltime }}</p>
+  <!-- Modal for delete a quiz -->
+  <div class="modal">
+    <div class="modal-content">
+      <div class="modal__header">
+        <span class="modal__close">x</span>
+        <h5>Вы действительно хотите удалить викторину?</h5>
       </div>
 
-      <p class="comment__body">{{ comment.body }}</p>
-
+      <div class="modal-body">
+        <button class="btn btn-join modal__btn_delete">Удалить</button>
+      </div>
     </div>
-    {% endfor %}
-  </section>
+  </div>
+  <!-- End modal -->
 
 </div>
+{% endblock %}
+
+{% block js %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+crossorigin="anonymous"></script>
+<script>
+  $(document).on('submit', '.comments__form', function(e) {
+      e.preventDefault();
+
+      $.ajax({
+          type: 'POST',
+          url: '{% url "comment-create" quiz.slug %}',
+          data: {
+              body: $('#id_body').val(),
+              csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+          },
+          success: function(data) {
+              let quizBlock = document.createElement('div');
+              document.querySelector('#id_body').value = ' ';
+              quizBlock.classList.add('comment');
+
+              quizBlock.innerHTML = `
+                <hr>
+                <div class="comment__username-wrap">
+                  <div class="user">
+                    <img class="user__img" src="/static/img/testuser.png" alt="Photo">
+                    <span class="user__username">{{ user.username }}</span>
+                  </div>
+
+                  <p class="comment__date">сейчас</p>
+                </div>
+
+                <p class="comment__body">${data.body}</p>
+              `;
+              $('.comment__objects').prepend(quizBlock);
+          },
+          error: function(err) {
+              console.log(err);
+          }
+      });
+  })
+</script>
+<script src="{% static 'js/deleteComment.js' %}"></script>
 {% endblock %}

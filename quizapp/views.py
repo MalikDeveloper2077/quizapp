@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ValidationError
 
 from .models import Quiz
-from .forms import QuizCreateForm
+from .forms import QuizCreateForm, CommentCreateForm
 from .for_slug import slugify as my_slugify
 
 
@@ -22,6 +22,7 @@ class QuizList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['active'] = 'list'
+        context['current_url'] = self.request.build_absolute_uri()
         return context
 
 
@@ -29,9 +30,14 @@ class QuizDetail(View):
     """Detail of the quizzes. Added 1 view to quiz.views"""
     def get(self, request, slug):
         quiz = get_object_or_404(Quiz, slug=slug)
+        form = CommentCreateForm()
         quiz.views += 1
         quiz.save()
-        return render(request, 'quizapp/quiz_detail.html', {'quiz': quiz})
+        ctx = {
+            'quiz': quiz,
+            'form': form
+        }
+        return render(request, 'quizapp/quiz_detail.html', ctx)
 
 
 class QuizCreate(LoginRequiredMixin, CreateView):

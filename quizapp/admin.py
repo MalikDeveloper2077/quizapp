@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Quiz, Category, Question, QuestionAnswer, Comment
+from .models import Quiz, Category, Question, QuestionAnswer, Comment, Bookmark
 
 
 class QuestionAnswerInline(admin.TabularInline):
@@ -32,7 +32,7 @@ class QuizAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    """Manage category model (for quizzes)"""
+    """Manage categories (for quizzes)"""
     list_display = ('name',)
     search_fields = ('name',)
 
@@ -43,7 +43,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    """Manage comment model (for quizzes)"""
+    """Manage comments (for quizzes)"""
     list_display = ('body', 'author', 'quiz', 'date',)
     list_filter = ('date', 'quiz',)
     search_fields = ('body',)
@@ -56,9 +56,21 @@ class CommentAdmin(admin.ModelAdmin):
     ]
 
 
+@admin.register(Bookmark)
+class BookmarkAdmin(admin.ModelAdmin):
+    """Manage bookmarks (for quizzes)"""
+    list_display = ('user', 'quiz',)
+    list_filter = ('date',)
+    readonly_fields = ('date',)
+
+    fieldsets = [
+        ('Главное', {'fields': ['user', 'quiz', 'date']})
+    ]
+
+
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    """Manage Question model"""
+    """Manage Questions (for quizzes)"""
     list_display = ('title', 'quiz',)
     search_fields = ['title', 'quiz']
 
@@ -71,7 +83,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
 @admin.register(QuestionAnswer)
 class QuestionAnswerAdmin(admin.ModelAdmin):
-    """Manage QuestionAnswer model"""
+    """Manage QuestionAnswers (for questions)"""
     list_display = ('value', 'question', 'is_correct')
     list_filter = ('is_correct',)
     search_fields = ['value', 'question']

@@ -148,3 +148,10 @@ footer {
 .content {
   padding-bottom: 50px;
 }
+
+.alert-success {
+  background-color: #262626 !important;
+  border: 0;
+  color: #fff;
+  border-radius: 10px;
+}

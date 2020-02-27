@@ -1,4 +1,5 @@
 // Show manage menu when mouse is over .manage__menu icon
+
 let menu = document.querySelectorAll('.manage__menu');
 
 menu.forEach(item => {

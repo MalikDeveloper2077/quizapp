@@ -7,9 +7,6 @@
 
 {% block links %}
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"
-integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block content %}
@@ -27,24 +24,36 @@ crossorigin="anonymous"></script>
 
           <div class="quiz__user">
 
-            {% if user == quiz.author %}
             <!-- Manage list ul -->
             <div class="user__manage">
               <i class="fas fa-ellipsis-h mr-3 manage__menu"></i>
 
               <ul class="manage__list">
+
+                {% if user == quiz.author %}
                 <a href="{{ quiz.get_update_url }}" class="list__item">
-                  Править
+                  <i class="fas fa-pencil-alt"></i>
+                  <span class="item__span">Править</span>
                 </a>
 
                 <a href="#" data-slug="{{ quiz.slug }}"
                 class="list__item list__item_delete">
-                  Удалить
+                  <i class="fas fa-trash"></i>
+                  <span class="item__span">Удалить</span>
                 </a>
+                {% endif %}
+
+                <a href="#" class="list__item list__item_link">
+                  <i class="fas fa-link"></i>
+                  <span class="item__span">Копировать ссылку</span>
+                  <p class="link__p">
+                    {{ current_url }}quiz/{{ quiz.slug}}
+                  </p>
+                </a>
+
               </ul>
             </div>
             <!-- End of the manage list -->
-            {% endif %}
 
             <img src="/static/img/testuser.png" class="user__img" alt="Photo">
             <span class="user__username">{{ quiz.author.username }}</span>
@@ -53,7 +62,9 @@ crossorigin="anonymous"></script>
         </div>
 
         <span class="quiz__views quiz__views-home pr-2">
-          <small><i class="far fa-eye fa-eye-home"></i> {{ quiz.views|intcomma }}</small>
+          <small>
+            <i class="far fa-eye fa-eye-home"></i> {{ quiz.views|intcomma }}
+          </small>
         </span>|
         <span class="quiz__date quiz__date-home">
           <small>{{ quiz.date|naturaltime }}</small>
@@ -99,6 +110,15 @@ crossorigin="anonymous"></script>
 
           <span class="quiz__comments ml-3">
             <i class="far fa-comment"></i> {{ quiz.get_comments_count }}
+          </span>
+
+          <span class="quiz__bookmarks ml-3">
+            {% if user in quiz.get_bookmarks_users %}
+              <i class="fas fa-star bookmarked"></i>
+            {% else %}
+              <i class="far fa-star"></i>
+            {% endif %}
+            {{ quiz.get_bookmarks_count }}
           </span>
         </p>
 
@@ -170,14 +190,21 @@ crossorigin="anonymous"></script>
     <!-- Modal for delete a quiz -->
     <div class="modal">
       <div class="modal-content">
+
         <div class="modal__header">
           <span class="modal__close">x</span>
           <h5>Вы действительно хотите удалить викторину?</h5>
         </div>
 
         <div class="modal-body">
-          <button class="btn btn-join modal__btn_delete">Удалить</button>
+          <form id="delete__form" method="POST">
+            {% csrf_token %}
+            <button class="btn btn-join modal__btn_delete" type="submit">
+              Удалить
+            </button>
+          </form>
         </div>
+
       </div>
     </div>
     <!-- End modal -->
@@ -187,6 +214,10 @@ crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block js %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+crossorigin="anonymous"></script>
 <script src="{% static 'js/manageQuizMenu.js' %}"></script>
 <script src="{% static 'js/deleteQuiz.js' %}"></script>
+<script src="{% static 'js/copyQuizLink.js' %}"></script>
 {% endblock %}

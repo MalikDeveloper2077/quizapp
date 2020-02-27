@@ -6,10 +6,10 @@ from .for_slug import slugify as my_slugify
 
 
 LEVEL_CHOICES = [
-    ('Легко', 'easy'),
-    ('Средне', 'normal'),
-    ('Сложно', 'hard'),
-    ('Экстремально', 'extreme'),
+    ('Легко', 'легко'),
+    ('Средне', 'средне'),
+    ('Сложно', 'сложно'),
+    ('Экстремально', 'экстремально'),
 ]
 
 
@@ -62,9 +62,6 @@ class Quiz(models.Model):
     def get_update_url(self):
         return reverse('quiz-update', kwargs={'slug': self.slug})
 
-    def get_delete_api_url(self):
-        return reverse('quiz-delete-api', kwargs={'slug': self.slug})
-
     def get_likes_count(self):
         return self.likes.count()
 
@@ -74,11 +71,25 @@ class Quiz(models.Model):
     def get_comments_count(self):
         return self.comments.count()
 
+    def get_bookmarks_count(self):
+        return self.bookmarks.count()
+
+    def get_bookmarks_users(self):
+        """Get all users who bookmarked the quiz"""
+        bookmark_users = []
+
+        for bookmark in self.bookmarks.all():
+            bookmark_users.append(bookmark.user)
+
+        return bookmark_users
+
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
-        """Use the custom slugfiy (for_slug.py)"""
+        """Use the custom slugify (for_slug.py) and add
+        generated slug + self.id in self.slug
+        """
         slug = my_slugify(self.title)
         self.slug = slug + f'-{self.id}'
         super().save(*args, **kwargs)
@@ -90,7 +101,7 @@ class Quiz(models.Model):
 
 
 class Category(models.Model):
-    """Category for the quiz"""
+    """Category for quizzes"""
     name = models.CharField('Имя категории', max_length=30)
 
     def __str__(self):
@@ -102,7 +113,7 @@ class Category(models.Model):
 
 
 class Comment(models.Model):
-    """Comment for the quiz"""
+    """Comment for a quiz"""
     quiz = models.ForeignKey(
         Quiz,
         on_delete=models.CASCADE,
@@ -127,8 +138,33 @@ class Comment(models.Model):
         ordering = ['-date']
 
 
+class Bookmark(models.Model):
+    """Bookmar for a quiz"""
+    quiz = models.ForeignKey(
+        Quiz,
+        on_delete=models.PROTECT,
+        verbose_name='Викторина',
+        related_name='bookmarks'
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+        related_name='bookmarks'
+    )
+    date = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
+
+    def __str__(self):
+        return f'{self.user} - {self.quiz}'
+
+    class Meta:
+        verbose_name = 'Закладка'
+        verbose_name_plural = 'Закладки'
+        ordering = ['-date']
+
+
 class Question(models.Model):
-    """Question for the quiz. Has foreign key to the Quiz"""
+    """Question for a quiz. Has foreign key to a Quiz"""
     quiz = models.ForeignKey(
         Quiz,
         on_delete=models.CASCADE,
@@ -146,7 +182,7 @@ class Question(models.Model):
 
 
 class QuestionAnswer(models.Model):
-    """Answer to the question. Has foreign key to the Question"""
+    """Answer to the question. Has foreign key to a Question"""
     question = models.ForeignKey(
         Question,
         on_delete=models.CASCADE,
