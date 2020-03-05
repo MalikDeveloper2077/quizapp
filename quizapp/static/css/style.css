@@ -144,8 +144,36 @@ p {
   font-size: 16px;
 }
 
+.quiz__likes_icon {
+  transition: 0.3s;
+}
+
+.like_animation {
+  animation-name: increase;
+  animation-duration: 0.6s;
+}
+
+.bookmark_animation {
+  animation-name: increase;
+  animation-duration: 0.6s;
+}
+
 .bookmarked {
   color: #f0d90a;
+  transition: 0.4s;
+}
+
+.quiz__bookmarks {
+  display: inline-block;
+}
+
+.quiz__bookmarks_icon {
+  transition: 0.4s;
+}
+
+.bookmarks__btn {
+  background-color: #262626;
+  border: 0;
 }
 
 .quiz__views-home {
@@ -456,7 +484,42 @@ p {
 
 
 
+@-webkit-keyframes modal-animate {
+ from {top:-320px; opacity:0}
+ to {top:0; opacity:1}
+}
+
 @keyframes modal-animate {
  from {top:-320px; opacity:0}
  to {top:0; opacity:1}
+}
+
+@-webkit-keyframes increase {
+  from {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.4);
+    transform: scale(1.4);
+  }
+  to {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes increase {
+  from {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.4);
+    transform: scale(1.4);
+  }
+  to {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
 }

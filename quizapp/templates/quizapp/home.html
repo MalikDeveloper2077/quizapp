@@ -30,7 +30,7 @@
 
               <ul class="manage__list">
 
-                {% if user == quiz.author %}
+                {% if user == quiz.author or user.is_staff %}
                 <a href="{{ quiz.get_update_url }}" class="list__item">
                   <i class="fas fa-pencil-alt"></i>
                   <span class="item__span">Править</span>
@@ -100,25 +100,27 @@
 
         <p class="quiz__parameters">
           <span class="quiz__likes">
-            {% if user in quiz.likes.all %}
-              <i class="fas fa-heart liked-heart"></i>
-            {% else %}
-              <i class="far fa-heart"></i>
-            {% endif %}
-            {{ quiz.get_likes_count|intcomma }}
+            <i class="{% if user in quiz.likes.all %}liked-heart fas{% else %}
+            far{% endif %} fa-heart quiz__likes_icon" data-slug="{{ quiz.slug }}"></i>
+            <span class="quiz__likes_count">
+              {{ quiz.get_likes_count|intcomma }}
+            </span>
           </span>
 
           <span class="quiz__comments ml-3">
-            <i class="far fa-comment"></i> {{ quiz.get_comments_count }}
+            <i class="far fa-comment"></i>
+            <span class="quiz__comments_count">
+              {{ quiz.get_comments_count }}
+            </span>
           </span>
 
           <span class="quiz__bookmarks ml-3">
-            {% if user in quiz.get_bookmarks_users %}
-              <i class="fas fa-star bookmarked"></i>
-            {% else %}
-              <i class="far fa-star"></i>
-            {% endif %}
-            {{ quiz.get_bookmarks_count }}
+            <i class="fa-star quiz__bookmarks_icon
+            {% if user in quiz.get_bookmarks_users %}fas bookmarked{% else %}
+            far{% endif %}" data-slug="{{ quiz.slug }}"></i>
+            <span class="quiz__bookmarks_count">
+              {{ quiz.get_bookmarks_count }}
+            </span>
           </span>
         </p>
 
@@ -220,4 +222,6 @@ crossorigin="anonymous"></script>
 <script src="{% static 'js/manageQuizMenu.js' %}"></script>
 <script src="{% static 'js/deleteQuiz.js' %}"></script>
 <script src="{% static 'js/copyQuizLink.js' %}"></script>
+<script src="{% static 'js/quizLike.js' %}"></script>
+<script src="{% static 'js/quizBookmark.js' %}"></script>
 {% endblock %}

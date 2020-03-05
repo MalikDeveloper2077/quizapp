@@ -24,7 +24,7 @@
         <h4 class="quiz-detail__body mb-3">{{ quiz.body|linebreaks }}</h4>
 
         {% if quiz.photo %}
-        <img src="{{ quiz.photo.url }}" class="quiz-detail__photo" alt="Photo">
+          <img src="{{ quiz.photo.url }}" class="quiz-detail__photo" alt="Photo">
         {% endif %}
 
         <button class="btn quiz__level mb-3
@@ -36,7 +36,7 @@
         </button>
 
         {% if quiz.category %}
-        <button class="btn quiz__category mb-3">{{ quiz.category }}</button>
+          <button class="btn quiz__category mb-3">{{ quiz.category }}</button>
         {% endif %}
 
         <br>
@@ -79,7 +79,7 @@
               </div>
             </form>
           {% else %}
-          <a href="#">Зарегистрируйтесь, чтобы написать комментарий</a>
+            <a href="#">Зарегистрируйтесь, чтобы написать комментарий</a>
           {% endif %}
 
           <div class="comment__objects">
@@ -95,13 +95,15 @@
 
                 <p class="comment__date">{{ comment.date|naturaltime }}</p>
 
-                <form id="delete__form" method="POST"
-                data-pk="{{ comment.pk }}">
-                  {% csrf_token %}
-                  <button type="submit" class="date-delete__delete">
-                    <i class="fas fa-trash"></i>
-                  </a>
-                </form>
+                {% if user == comment.author or user.is_staff %}
+                  <form id="delete__form" method="POST"
+                  data-pk="{{ comment.pk }}">
+                    {% csrf_token %}
+                    <button type="submit" class="date-delete__delete">
+                      <i class="fas fa-trash"></i>
+                    </a>
+                  </form>
+                {% endif %}
               </div>
 
               <p class="comment__body">{{ comment.body }}</p>
@@ -139,21 +141,6 @@
     </div>
   </section>
 
-  <!-- Modal for delete a quiz -->
-  <div class="modal">
-    <div class="modal-content">
-      <div class="modal__header">
-        <span class="modal__close">x</span>
-        <h5>Вы действительно хотите удалить викторину?</h5>
-      </div>
-
-      <div class="modal-body">
-        <button class="btn btn-join modal__btn_delete">Удалить</button>
-      </div>
-    </div>
-  </div>
-  <!-- End modal -->
-
 </div>
 {% endblock %}
 
@@ -167,7 +154,7 @@ crossorigin="anonymous"></script>
 
       $.ajax({
           type: 'POST',
-          url: '{% url "comment-create" quiz.slug %}',
+          url: '{% url "comment-create-api" quiz.slug %',
           data: {
               body: $('#id_body').val(),
               csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()

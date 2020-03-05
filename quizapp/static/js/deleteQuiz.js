@@ -37,7 +37,7 @@ $(document).on('submit', '#delete__form', function(e) {
 
     $.ajax({
         type: 'DELETE',
-        url: `api/quiz/delete/${slug}/`,
+        url: `api/quiz/${slug}/delete/`,
         data: {},
         headers:{"X-CSRFToken": csrf_token},
         success: function(data) {
