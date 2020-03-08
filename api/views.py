@@ -10,36 +10,39 @@ from .permissions import IsQuizOrCommentAuthor
 
 
 class QuizDeleteAPI(generics.DestroyAPIView):
-    """API for delete a quiz"""
+    """API for deleting a quiz"""
     queryset = Quiz.objects.all()
     lookup_field = 'slug'
     permission_classes = (IsAuthenticated, IsQuizOrCommentAuthor,)
 
 
 class CommentDeleteAPI(generics.DestroyAPIView):
-    """API for delete a comment"""
+    """API for deleting a comment"""
     queryset = Comment.objects.all()
     permission_classes = (IsAuthenticated, IsQuizOrCommentAuthor,)
 
 
-class CommentCreateAPI(APIView):
-    """API for create a quiz comment. Get a quiz slug"""
+class CommentCreateAPI(generics.CreateAPIView):
+    """API for creating a quiz comment. 
+
+    Get a quiz slug kwarg. Find the quiz via slug and
+    Save serializer with author=request.user and quiz=quiz
+
+    """
     permission_classes = (IsAuthenticated,)
+    serializer_class = CommentSerializer
 
-    def post(self, request, slug):
-        quiz = get_object_or_404(Quiz, slug=slug)
-
-        serializer = CommentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(author=request.user, quiz=quiz)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        quiz = get_object_or_404(Quiz, slug=self.kwargs['slug'])
+        serializer.save(author=self.request.user, quiz=quiz)
 
 
 class QuizLikeUnlikeAPI(APIView):
     """API for like and unlike a quiz.
-    Add or remove user to quiz.likes relationship
+
+    Add or remove user to quiz.likes relationship.
+    Use quiz slug from request.GET data
+
     """
     permission_classes = (IsAuthenticated,)
 
@@ -60,8 +63,11 @@ class QuizLikeUnlikeAPI(APIView):
 
 
 class CreateRemoveBookmarkAPI(APIView):
-    """API for create or remove quiz bookmark.
-    Get a quiz slug, and create or remove bookmark at it
+    """API for creating or removing quiz bookmark.
+
+    Get a quiz slug from request.data.
+    Create or remove bookmark at that quiz
+
     """
     permission_classes = (IsAuthenticated,)
 

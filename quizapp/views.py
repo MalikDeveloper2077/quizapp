@@ -7,13 +7,13 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ValidationError
 
-from .models import Quiz
+from .models import Quiz, Question
 from .forms import QuizCreateForm, CommentCreateForm
 from .for_slug import slugify as my_slugify
 
 
 class QuizList(ListView):
-    """List of the quizzes + paginate"""
+    """List of quizzes + pagination"""
     model = Quiz
     template_name = 'quizapp/home.html'
     context_object_name = 'quizzes'
@@ -27,7 +27,8 @@ class QuizList(ListView):
 
 
 class QuizDetail(View):
-    """Detail of the quizzes. Added 1 view to quiz.views"""
+    """Detail of a quiz. Add 1 view to quiz.views"""
+
     def get(self, request, slug):
         quiz = get_object_or_404(Quiz, slug=slug)
         form = CommentCreateForm()
@@ -41,7 +42,7 @@ class QuizDetail(View):
 
 
 class QuizCreate(LoginRequiredMixin, CreateView):
-    """Create the quiz"""
+    """Create a quiz"""
     model = Quiz
     form_class = QuizCreateForm
     template_name_suffix = '_create'
@@ -55,10 +56,24 @@ class QuizCreate(LoginRequiredMixin, CreateView):
 
 
 class QuizUpdate(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
-    """Update the quiz"""
+    """Update a quiz"""
     model = Quiz
     form_class = QuizCreateForm
     template_name_suffix = '_update'
 
     def test_func(self):
         return self.get_object().author == self.request.user
+
+
+class QuestionList(ListView):
+    """List of quiz questions and paginate it by 1 page"""
+    model = Question
+    template_name = 'quizapp/question_list.html'
+    context_object_name = 'questions'
+    paginate_by = 1
+
+    def get_queryset(self):
+        quiz = get_object_or_404(Quiz, slug=self.kwargs['slug'])
+        queryset = super().get_queryset()
+        queryset = queryset.filter(quiz=quiz)
+        return queryset

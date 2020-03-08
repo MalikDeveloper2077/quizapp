@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Прохождение викторины{% endblock %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    {% for question in questions %}
+    <div class="question">
+
+        {% if page_obj.has_previous %}
+        <a class="question__back" href="?page={{ page_obj.previous_page_number }}">
+            <i class="fas fa-long-arrow-alt-left mr-1"></i> Назад
+        </a>
+        {% endif %}
+
+        <h2 class="question__title">{{ question.title }}</h2>
+        <h6 class="question__count">{{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</h6>
+
+        <div class="answers">
+            <div class="row">
+
+                {% for answer in question.answers.all %}
+                <div class="col-lg-6 col-sm-12 answer-col">
+                    <div class="answer">
+                        <span class="answer__label">
+                            {{ answer.value }}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="answers__btn_wrap">
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="answers__btn">Дальше</a>
+                    {% else %}
+                    <a href="#" class="answers__btn">Завершить</a>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/selectAnswer.js' %}"></script>
+<script src="{% static 'js/btnNextQuestion.js' %}"></script>
+{% endblock %}

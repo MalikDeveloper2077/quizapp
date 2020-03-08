@@ -1,92 +1,92 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ru" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>QuizApp | {% block title %}{% endblock %}</title>
-    <link rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-    crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css"
-    integrity="sha384-rtJEYb85SiYWgfpCr0jn174XgJTn4rptSOQsMroFBPQSGLdOC5IbubP6lJ35qoM9"
-    crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed&display=swap"
-    rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/master.css' %}">
-    {% block links %}{% endblock %}
-  </head>
-  <body>
-    <div class="wrap">
 
-      <header>
-        <div class="container">
-          <div class="header__wrapper">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>QuizApp | {% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css"
+    integrity="sha384-rtJEYb85SiYWgfpCr0jn174XgJTn4rptSOQsMroFBPQSGLdOC5IbubP6lJ35qoM9" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap&subset=cyrillic" rel="stylesheet">
 
-            <nav class="header__nav">
-              <div class="nav__logo">
-                <img class="logo__img" src="{% static 'img/logo.png' %}">
-              </div>
+  <link rel="stylesheet" href="{% static 'css/master.css' %}">
+  {% block links %}{% endblock %}
+</head>
 
-              <a href="/" class="nav__item
-              {% if active == 'list' %}active{% endif %}">
-                Главная
-              </a>
+<body>
+  <div class="wrap">
 
-              <a href="#" class="nav__item
-              {% if active == 'top' %}active{% endif %}">
-                Топ викторин
-              </a>
+    <header>
+      <div class="container">
+        <div class="header__wrapper">
 
-              <a href="#" class="nav__item
-              {% if active == 'my_quizzes' %}active{% endif %}">
-                Мои викторины
-              </a>
-            </nav>
-
-            <div class="header__profile">
-              <a href="{% url 'quiz-create' %}"
-              class="profile__btn-create btn mr-4">
-                Создать <i class="fas fa-plus ml-1"></i>
-              </a>
-
-              <img class="profile__img" src="{% static 'img/testuser.png' %}">
-
-              <i class="fas fa-angle-down ml-2"></i>
-
-              <span class="profile__name">{{ user.username }}</span>
+          <nav class="header__nav">
+            <div class="nav__logo">
+              <img class="logo__img" src="{% static 'img/logo.png' %}">
             </div>
 
-          </div>
-        </div>
-      </header>
+            <a href="/" class="nav__item
+              {% if active == 'list' %}active{% endif %}">
+              Главная
+            </a>
 
-      <div class="content">
-        {% block content %}
-        {% endblock %}
+            <a href="#" class="nav__item
+              {% if active == 'top' %}active{% endif %}">
+              Топ викторин
+            </a>
+
+            <a href="#" class="nav__item
+              {% if active == 'my_quizzes' %}active{% endif %}">
+              Мои викторины
+            </a>
+          </nav>
+
+          <div class="header__profile">
+            <a href="{% url 'quiz-create' %}" class="profile__btn-create btn mr-4">
+              Создать <i class="fas fa-plus ml-1"></i>
+            </a>
+
+            <img class="profile__img" src="{% static 'img/testuser.png' %}">
+
+            <i class="fas fa-angle-down ml-2"></i>
+
+            <span class="profile__name">{{ user.username }}</span>
+          </div>
+
+        </div>
       </div>
+    </header>
 
-      <footer>
-        <div class="container">
-          <div class="footer__wrapper">
-
-            <nav class="footer__nav">
-              <li class="footer-nav__item">Политика</li>
-              <li class="footer-nav__item">Правила</li>
-              <li class="footer-nav__item">Пользование</li>
-            </nav>
-
-            <div class="footer__rules">@ Все права защищены {% now "Y" %}</div>
-
-          </div>
-        </div>
-      </footer>
-
+    <div class="content">
+      {% block content %}
+      {% endblock %}
     </div>
 
-    {% block js %}
-    {% endblock %}
-  </body>
+    <footer>
+      <div class="container">
+        <div class="footer__wrapper">
+
+          <nav class="footer__nav">
+            <li class="footer-nav__item">Политика</li>
+            <li class="footer-nav__item">Правила</li>
+            <li class="footer-nav__item">Пользование</li>
+          </nav>
+
+          <div class="footer__rules">@ Все права защищены {% now "Y" %}</div>
+
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  {% block js %}
+  {% endblock %}
+</body>
+
 </html>

@@ -24,7 +24,7 @@
         <h4 class="quiz-detail__body mb-3">{{ quiz.body|linebreaks }}</h4>
 
         {% if quiz.photo %}
-          <img src="{{ quiz.photo.url }}" class="quiz-detail__photo" alt="Photo">
+        <img src="{{ quiz.photo.url }}" class="quiz-detail__photo" alt="Photo">
         {% endif %}
 
         <button class="btn quiz__level mb-3
@@ -36,15 +36,15 @@
         </button>
 
         {% if quiz.category %}
-          <button class="btn quiz__category mb-3">{{ quiz.category }}</button>
+        <button class="btn quiz__category mb-3">{{ quiz.category }}</button>
         {% endif %}
 
         <br>
         <span class="quiz__likes quiz__likes-detail mt-4">
           {% if user in quiz.likes.all %}
-            <i class="fas fa-heart liked-heart"></i>
+          <i class="fas fa-heart liked-heart"></i>
           {% else %}
-            <i class="far fa-heart"></i>
+          <i class="far fa-heart"></i>
           {% endif %}
           {{ quiz.get_likes_count|intcomma }}
         </span>
@@ -55,31 +55,31 @@
 
         <span class="quiz__bookmarks ml-3">
           {% if user in quiz.get_bookmarks_users %}
-            <i class="fas fa-star bookmarked"></i>
+          <i class="fas fa-star bookmarked"></i>
           {% else %}
-            <i class="far fa-star"></i>
+          <i class="far fa-star"></i>
           {% endif %}
           {{ quiz.get_bookmarks_count }}
         </span>
 
         <div class="quiz-detail__btn-start">
-          <a href="#" class="btn btn-join btn-start">Начать</a>
+          <a href="{{ quiz.get_question_list_url }}" class="btn btn-join btn-start">Начать</a>
         </div>
 
         <!-- Comments section -->
         <section class="comments">
           {% if user.is_authenticated %}
-            <form class="comments__form" data-slug="{{ quiz.slug }}" method="post">
-              {% csrf_token %}
-              <div class="form__wrap">
-                {{ form|crispy }}
-                <button type="submit" class="form__btn">
-                  <i class="fas fa-paper-plane form__submit"></i>
-                </button>
-              </div>
-            </form>
+          <form class="comments__form" data-slug="{{ quiz.slug }}" method="post">
+            {% csrf_token %}
+            <div class="form__wrap">
+              {{ form|crispy }}
+              <button type="submit" class="form__btn">
+                <i class="fas fa-paper-plane form__submit"></i>
+              </button>
+            </div>
+          </form>
           {% else %}
-            <a href="#">Зарегистрируйтесь, чтобы написать комментарий</a>
+          <a href="#">Зарегистрируйтесь, чтобы написать комментарий</a>
           {% endif %}
 
           <div class="comment__objects">
@@ -96,13 +96,12 @@
                 <p class="comment__date">{{ comment.date|naturaltime }}</p>
 
                 {% if user == comment.author or user.is_staff %}
-                  <form id="delete__form" method="POST"
-                  data-pk="{{ comment.pk }}">
-                    {% csrf_token %}
-                    <button type="submit" class="date-delete__delete">
-                      <i class="fas fa-trash"></i>
+                <form id="delete__form" method="POST" data-pk="{{ comment.pk }}">
+                  {% csrf_token %}
+                  <button type="submit" class="date-delete__delete">
+                    <i class="fas fa-trash"></i>
                     </a>
-                  </form>
+                </form>
                 {% endif %}
               </div>
 
@@ -120,20 +119,20 @@
       <!-- Right column -->
       <div class="col-lg-3 quiz-detail__right-wrap">
 
-        <p class="quiz__completed">
+        <img src="/static/img/testuser.png" class="user__img" alt="Photo">
+        <span class="user__username">{{ quiz.author.username }}</span><br>
+
+        <span class="quiz__views quiz__views_detail mt-4">
+          <i class="far fa-eye mr-1"></i> {{ quiz.views|intcomma }}
+        </span><br>
+
+        <span class="quiz__date quiz__date_detail mt-1">
+          <i class="far fa-clock"></i> {{ quiz.date|naturaltime }}
+        </span>
+
+        <p class="quiz__completed mt-4">
           Пройдено: {{ quiz.get_completed_count }}
         </p>
-
-        <p class="quiz__views">
-          <i class="far fa-eye mr-1"></i> {{ quiz.views|intcomma }}
-        </p>
-
-        <p class="quiz__date">
-          <i class="far fa-clock"></i> {{ quiz.date|naturaltime }}
-        </p>
-
-        <img src="/static/img/testuser.png" class="user__img" alt="Photo">
-        <span class="user__username">{{ quiz.author.username }}</span>
 
       </div>
       <!-- End right column -->
@@ -146,25 +145,24 @@
 
 {% block js %}
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-crossorigin="anonymous"></script>
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script>
-  $(document).on('submit', '.comments__form', function(e) {
-      e.preventDefault();
+  $(document).on('submit', '.comments__form', function (e) {
+    e.preventDefault();
 
-      $.ajax({
-          type: 'POST',
-          url: '{% url "comment-create-api" quiz.slug %',
-          data: {
-              body: $('#id_body').val(),
-              csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-          },
-          success: function(data) {
-              let quizBlock = document.createElement('div');
-              document.querySelector('#id_body').value = ' ';
-              quizBlock.classList.add('comment');
+    $.ajax({
+      type: 'POST',
+      url: '{% url "comment-create-api" quiz.slug %}',
+      data: {
+        body: $('#id_body').val(),
+        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+      },
+      success: function (data) {
+        let quizBlock = document.createElement('div');
+        document.querySelector('#id_body').value = ' ';
+        quizBlock.classList.add('comment');
 
-              quizBlock.innerHTML = `
+        quizBlock.innerHTML = `
                 <hr>
                 <div class="comment__username-wrap">
                   <div class="user">
@@ -177,12 +175,12 @@ crossorigin="anonymous"></script>
 
                 <p class="comment__body">${data.body}</p>
               `;
-              $('.comment__objects').prepend(quizBlock);
-          },
-          error: function(err) {
-              console.log(err);
-          }
-      });
+        $('.comment__objects').prepend(quizBlock);
+      },
+      error: function (err) {
+        console.log(err);
+      }
+    });
   })
 </script>
 <script src="{% static 'js/deleteComment.js' %}"></script>

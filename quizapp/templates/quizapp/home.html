@@ -20,7 +20,7 @@
       <div class="quiz">
 
         <div class="quiz__usertitle-wrap">
-          <h4 class="quiz__title">{{ quiz.title }}</h4>
+          <h4 class="quiz__title mb-4">{{ quiz.title }}</h4>
 
           <div class="quiz__user">
 
@@ -36,8 +36,7 @@
                   <span class="item__span">Править</span>
                 </a>
 
-                <a href="#" data-slug="{{ quiz.slug }}"
-                class="list__item list__item_delete">
+                <a href="#" data-slug="{{ quiz.slug }}" class="list__item list__item_delete">
                   <i class="fas fa-trash"></i>
                   <span class="item__span">Удалить</span>
                 </a>
@@ -72,12 +71,12 @@
 
         <p class="quiz__body">
           {% if quiz.body|length > 150 %}
-            {{ quiz.body|slice:':150' }}...<br />
-            <a href="{{ quiz.get_absolute_url }}">
-              <small>Читать полностью</small>
-            </a>
+          {{ quiz.body|slice:':150' }}...<br />
+          <a href="{{ quiz.get_absolute_url }}">
+            <small>Читать полностью</small>
+          </a>
           {% else %}
-            {{ quiz.body }}
+          {{ quiz.body }}
           {% endif %}
         </p>
 
@@ -133,47 +132,46 @@
 
       <!-- Pagination -->
       {% if is_paginated %}
-        <nav>
-          <ul class="pagination">
-            {% if page_obj.has_previous %}
-              <li class="page-item">
-                <a class="page-link" href="?page=1">
-                  &laquo;
-                </a>
-              </li>
+      <nav>
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page=1">
+              &laquo;
+            </a>
+          </li>
 
-              <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
-                  &lt;
-                </a>
-              </li>
-            {% endif %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+              &lt;
+            </a>
+          </li>
+          {% endif %}
 
-            {% for n in page_obj.paginator.page_range %}
-              {% if n > page_obj.number|add:-4 and n < page_obj.number|add:4 %}
-                <li class="page-item">
-                  <a class="page-link {% if n == page_obj.number %}
-                  active-pagination {% else %}no-active {% endif %}"
-                  href='?page={{ n }}'>{{ n }}</a>
-                </li>
-              {% endif %}
-            {% endfor %}
+          {% for n in page_obj.paginator.page_range %}
+          {% if n > page_obj.number|add:-4 and n < page_obj.number|add:4 %}
+          <li class="page-item">
+            <a class="page-link {% if n == page_obj.number %}
+                  active-pagination {% else %}no-active {% endif %}" href='?page={{ n }}'>{{ n }}</a>
+          </li>
+          {% endif %}
+          {% endfor %}
 
-            {% if page_obj.has_next %}
-              <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
-                  &gt;
-                </a>
-              </li>
+          {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+              &gt;
+            </a>
+          </li>
 
-              <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
-                  &raquo;
-                </a>
-              </li>
-            {% endif %}
-          </ul>
-        </nav>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+              &raquo;
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
       {% endif %}
       <!-- End of the pagination -->
 
@@ -217,8 +215,7 @@
 
 {% block js %}
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-crossorigin="anonymous"></script>
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script src="{% static 'js/manageQuizMenu.js' %}"></script>
 <script src="{% static 'js/deleteQuiz.js' %}"></script>
 <script src="{% static 'js/copyQuizLink.js' %}"></script>

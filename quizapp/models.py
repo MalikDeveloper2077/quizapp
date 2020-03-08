@@ -43,12 +43,6 @@ class Quiz(models.Model):
         related_name="liked_quizzes",
         blank=True
     )
-    completed = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        verbose_name="Пройдено",
-        related_name="completed_quizzes",
-        blank=True
-    )
     photo = models.ImageField(
         'Фото',
         upload_to='main_quiz_photos/%Y/',
@@ -62,11 +56,14 @@ class Quiz(models.Model):
     def get_update_url(self):
         return reverse('quiz-update', kwargs={'slug': self.slug})
 
+    def get_question_list_url(self):
+        return reverse('question-list', kwargs={'slug': self.slug})
+
     def get_likes_count(self):
         return self.likes.count()
 
     def get_completed_count(self):
-        return self.completed.count()
+        return QuizManager.objects.filter(quiz=self, completed=True).count()
 
     def get_comments_count(self):
         return self.comments.count()
@@ -100,6 +97,41 @@ class Quiz(models.Model):
         ordering = ['-date']
 
 
+class QuizManager(models.Model):
+    """Manager for a quiz. Create when a user starts a quiz.
+
+    correct_answers: stores correct answers.
+
+    completed: state of a quiz passing. 
+    Set True when a user answered on the all quiz questions
+
+    """
+    quiz = models.ForeignKey(
+        Quiz,
+        on_delete=models.CASCADE,
+        related_name='managers',
+        verbose_name='Викторина'
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='managers',
+        verbose_name='Пользователь'
+    )
+    date = models.DateTimeField(
+        'Дата создания', auto_now_add=True, blank=True, null=True
+    )
+    correct_answers = models.IntegerField('Правильные ответы', default=0)
+    completed = models.BooleanField('Завершено', default=False)
+
+    def __str__(self):
+        return f'{self.quiz}-{self.user}'
+
+    class Meta:
+        verbose_name = 'Менеджер викторины'
+        verbose_name_plural = 'Менеджеры викторин'
+
+
 class Category(models.Model):
     """Category for quizzes"""
     name = models.CharField('Имя категории', max_length=30)
@@ -127,7 +159,8 @@ class Comment(models.Model):
         related_name='comments'
     )
     body = models.TextField('Текст')
-    date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    date = models.DateTimeField(
+        auto_now_add=True, verbose_name='Дата создания')
 
     def __str__(self):
         return self.body
@@ -152,7 +185,8 @@ class Bookmark(models.Model):
         verbose_name='Пользователь',
         related_name='bookmarks'
     )
-    date = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
+    date = models.DateTimeField(
+        auto_now_add=True, verbose_name='Дата добавления')
 
     def __str__(self):
         return f'{self.user} - {self.quiz}'
@@ -171,7 +205,7 @@ class Question(models.Model):
         verbose_name='Викторина',
         related_name='questions'
     )
-    title = models.CharField('Вопрос', max_length=150)
+    title = models.CharField('Вопрос', max_length=100)
 
     def __str__(self):
         return self.title
@@ -189,7 +223,7 @@ class QuestionAnswer(models.Model):
         verbose_name='Вопрос',
         related_name='answers'
     )
-    value = models.CharField('Ответ', max_length=150)
+    value = models.CharField('Ответ', max_length=50)
     is_correct = models.BooleanField('Корректность', default=False)
 
     def __str__(self):
