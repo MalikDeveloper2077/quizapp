@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+
+{% block title %}Редактировать викторину{% endblock %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-9 col-sm-12 quiz-update">
+
+      <form method="post" class="quiz-update__form" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="quiz-update__btn-wrap">
+          <input class="btn btn-join quiz-update__btn"
+          type="submit" value="Сохранить">
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

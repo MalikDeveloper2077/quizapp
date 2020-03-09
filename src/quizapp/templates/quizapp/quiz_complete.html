@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Создать викторину{% endblock %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container complete-container">
+    <div class="complete_wrap">
+        <div class="complete">
+
+            <div class="congratulation">
+                <h1 class="complete__title">
+                    {% if result_state == 'awesome' %}
+                    Потрясающе 😍
+                    {% elif result_state == 'good' %}
+                    Отлично 👍
+                    {% elif result_state == 'normal' %}
+                    Неплохо 😁
+                    {% else %}
+                    Не огорчайся 😕
+                    {% endif %}
+                </h1>
+                <span class="complete__span_count">Ты ответил на:</span>
+                <h2 class="complete__count">{{ correct_answers }} из {{ all_answers }}</h2>
+            </div>
+
+            <!-- TODO: add real parameters -->
+
+            <div class="row complete__parameters">
+                <div class="col-lg-6">
+                    <h5 class="complete__xp">
+                        <span class="complete__span">Опыт XP:</span> 2320
+                    </h5>
+                    <h5 class="complete__level">
+                        <span class="complete__span">Уровень:</span> Острый козырёк</h5>
+                </div>
+
+                <div class="col-lg-6 complete__plus">
+                    <h5 class="complete__xp_green">+ 54</h5>
+                    <h5 class="complete__level_green">+ Новый уровень</h5>
+                </div>
+            </div>
+
+            <div class="complete__btn_div">
+                <a href="{% url 'home' %}" class="btn complete__btn">На главную</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

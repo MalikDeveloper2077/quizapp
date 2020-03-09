@@ -1,0 +1,157 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: #212121;
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+}
+
+hr {
+  background-color: #34264a;
+}
+
+input[type=text], input[type=file], select, option, textarea {
+  color: #fff !important;
+  background-color: #262626 !important;
+  border: 0 !important;
+}
+
+input[type=text]:focus, input[type=file]:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 .2rem #34264a !important;
+}
+
+label {
+  color: #b5b5b5 !important;
+  font-size: 14px;
+}
+
+a {
+  color: #098ae5;
+}
+
+
+/* Header and footer
+====================*/
+
+.wrap {
+  min-height: 100%;
+  position: relative;
+}
+
+header, footer {
+  background-color: #34264a;
+}
+
+header {
+  margin-bottom: 20px;
+  padding: 7px 0;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.header__wrapper, .footer__wrapper {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header__nav, .footer__nav {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  list-style: none;
+  align-items: center;
+}
+
+.logo__img {
+  height: 35px;
+}
+
+.nav__item, .footer-nav__item, .footer__rules {
+  margin-left: 30px;
+  color: #bababa;
+}
+
+.nav__item {
+  font-size: 17px;
+  transition: 0.4s;
+}
+
+.nav__item:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+.footer-nav__item, .footer__rules {
+  font-size: 15px;
+}
+
+.footer-nav__item:first-child {
+  margin-left: 0;
+}
+
+.nav__item:first-child {
+  margin-left: 0;
+}
+
+.active {
+  border-bottom: 2px solid #bf1b91;
+  color: #fff;
+}
+
+.profile__btn-create {
+  padding: 5px 20px;
+  border-radius: 15px;
+  background-color: #bf1b91;
+  border: 0;
+  font-weight: bold;
+  font-size: 15px;
+  color: #fff;
+}
+
+.profile__btn-create:hover {
+  background-color: #9e1878;
+  color: #fff;
+}
+
+.profile__btn-create:focus {
+  -webkit-box-shadow: 0 0 0 .2rem #871467;
+  -moz-box-shadow: 0 0 0 .2rem #871467;
+  box-shadow: 0 0 0 .2rem #871467;
+}
+
+.profile__img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profile__name {
+  margin-left: 15px;
+}
+
+
+/* Content
+=========*/
+
+.content {
+  padding-bottom: 50px;
+}
+
+.alert-success {
+  background-color: #262626 !important;
+  border: 0;
+  color: #fff;
+  border-radius: 10px;
+}

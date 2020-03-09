@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Прохождение викторины{% endblock %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  {% for question in questions %}
+  <div class="question" data-quiz-slug="{{ question.quiz.slug }}">
+
+    <h2 class="question__title">{{ question.title }}</h2>
+    <h6 class="question__count">
+      {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+    </h6>
+
+    <div class="answers">
+      <div class="row">
+
+        {% for answer in question.answers.all %}
+        <div class="col-lg-6 col-sm-12 answer-col">
+          <div class="answer" data-pk="{{ answer.pk }}">
+            <span class="answer__label">
+              {{ answer.value }}
+            </span>
+          </div>
+        </div>
+        {% endfor %}
+
+        <div class="answers__btn_wrap">
+          {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}" data-last="false" class="answers__btn">
+            Дальше
+          </a>
+          {% else %}
+          <a href="#" data-last="true" class="answers__btn">Завершить</a>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+  {% endfor %}
+
+  {% if page_obj.has_previous %}
+  <a class="question__back" href="?page={{ page_obj.previous_page_number }}">
+    <i class="fas fa-long-arrow-alt-left mr-1"></i> Назад
+  </a>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="{% static 'js/selectAnswer.js' %}"></script>
+<script src="{% static 'js/btnNextQuestion.js' %}"></script>
+
+<script>
+  let btnNextQuestion = document.querySelector('.answers__btn');
+  let quizSlug = document.querySelector('.question').getAttribute('data-quiz-slug');
+
+  btnNextQuestion.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    // selected answer and if question is last
+    let answerSelectedPk = document.querySelector('.answer_selected').getAttribute('data-pk');
+    let is_last = this.getAttribute('data-last') == 'true' ? true : false
+
+    $.ajax({
+      type: 'GET',
+      url: `/api/quiz/${quizSlug}/check-answer/`,
+      data: {
+        pk: answerSelectedPk
+      },
+      success: function (data) {
+        // If question is last redirect to the complete page
+        // Else redirect to the next page of the quiz
+
+        if (is_last) {
+          window.location.replace(`/quiz/${quizSlug}/complete/`);
+        } else {
+          window.location.replace("{{ request.path }}?page={{ page_obj.number|add:1 }}");
+        }
+      },
+      error: function (err) {
+        console.log(err)
+      }
+    })
+  })
+</script>
+{% endblock %}

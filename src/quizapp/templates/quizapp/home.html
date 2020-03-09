@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block title %}Главная{% endblock %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+
+    <!-- Left column. The quizzes -->
+    <div class="col-lg-8 col-sm-12">
+
+      {% for quiz in quizzes %}
+      <div class="quiz">
+
+        <div class="quiz__usertitle-wrap">
+          <h4 class="quiz__title mb-4">{{ quiz.title }}</h4>
+
+          <div class="quiz__user">
+
+            <!-- Manage list ul -->
+            <div class="user__manage">
+              <i class="fas fa-ellipsis-h mr-3 manage__menu"></i>
+
+              <ul class="manage__list">
+
+                {% if user == quiz.author or user.is_staff %}
+                <a href="{{ quiz.get_update_url }}" class="list__item">
+                  <i class="fas fa-pencil-alt"></i>
+                  <span class="item__span">Править</span>
+                </a>
+
+                <a href="#" data-slug="{{ quiz.slug }}" class="list__item list__item_delete">
+                  <i class="fas fa-trash"></i>
+                  <span class="item__span">Удалить</span>
+                </a>
+                {% endif %}
+
+                <a href="#" class="list__item list__item_link">
+                  <i class="fas fa-link"></i>
+                  <span class="item__span">Копировать ссылку</span>
+                  <p class="link__p">
+                    {{ current_url }}quiz/{{ quiz.slug}}
+                  </p>
+                </a>
+
+              </ul>
+            </div>
+            <!-- End of the manage list -->
+
+            <img src="/static/img/testuser.png" class="user__img" alt="Photo">
+            <span class="user__username">{{ quiz.author.username }}</span>
+
+          </div>
+        </div>
+
+        <span class="quiz__views quiz__views-home pr-2">
+          <small>
+            <i class="far fa-eye fa-eye-home"></i> {{ quiz.views|intcomma }}
+          </small>
+        </span>|
+        <span class="quiz__date quiz__date-home">
+          <small>{{ quiz.date|naturaltime }}</small>
+        </span><br>
+
+        <p class="quiz__body">
+          {% if quiz.body|length > 150 %}
+          {{ quiz.body|slice:':150' }}...<br />
+          <a href="{{ quiz.get_absolute_url }}">
+            <small>Читать полностью</small>
+          </a>
+          {% else %}
+          {{ quiz.body }}
+          {% endif %}
+        </p>
+
+        {% if quiz.photo %}
+        <img src="{{ quiz.photo.url }}" class="quiz__photo" alt="Photo">
+        {% endif %}
+
+        <button type="button" class="quiz__level btn
+        {% if quiz.level == 'Легко' %}btn-success{% endif %}
+        {% if quiz.level == 'Средне' %}btn-primary{% endif %}
+        {% if quiz.level == 'Сложно' %}btn-hard{% endif %}
+        {% if quiz.level == 'Экстремально' %}btn-danger{% endif %}
+        ">
+          {{ quiz.level }}
+        </button>
+
+        {% if quiz.category %}
+        <button class="btn quiz__category">{{ quiz.category }}</button>
+        {% endif %}
+
+        <p class="quiz__parameters">
+          <span class="quiz__likes">
+            <i class="{% if user in quiz.likes.all %}liked-heart fas{% else %}
+            far{% endif %} fa-heart quiz__likes_icon" data-slug="{{ quiz.slug }}"></i>
+            <span class="quiz__likes_count">
+              {{ quiz.get_likes_count|intcomma }}
+            </span>
+          </span>
+
+          <span class="quiz__comments ml-3">
+            <i class="far fa-comment"></i>
+            <span class="quiz__comments_count">
+              {{ quiz.get_comments_count }}
+            </span>
+          </span>
+
+          <span class="quiz__bookmarks ml-3">
+            <i class="fa-star quiz__bookmarks_icon
+            {% if user in quiz.get_bookmarks_users %}fas bookmarked{% else %}
+            far{% endif %}" data-slug="{{ quiz.slug }}"></i>
+            <span class="quiz__bookmarks_count">
+              {{ quiz.get_bookmarks_count }}
+            </span>
+          </span>
+        </p>
+
+        <a href="{{ quiz.get_absolute_url }}" class="mt-2 btn btn-join btn-block">
+          Пройти
+        </a>
+
+      </div>
+      {% endfor %}
+
+      <!-- Pagination -->
+      {% if is_paginated %}
+      <nav>
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page=1">
+              &laquo;
+            </a>
+          </li>
+
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+              &lt;
+            </a>
+          </li>
+          {% endif %}
+
+          {% for n in page_obj.paginator.page_range %}
+          {% if n > page_obj.number|add:-4 and n < page_obj.number|add:4 %}
+          <li class="page-item">
+            <a class="page-link {% if n == page_obj.number %}
+                  active-pagination {% else %}no-active {% endif %}" href='?page={{ n }}'>{{ n }}</a>
+          </li>
+          {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+              &gt;
+            </a>
+          </li>
+
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+              &raquo;
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+      <!-- End of the pagination -->
+
+    </div>
+    <!-- End of the left column -->
+
+
+    <!-- Right column of the filters -->
+    <div class="col-lg-4">
+
+
+
+    </div>
+    <!-- End of the right column -->
+
+    <!-- Modal for delete a quiz -->
+    <div class="modal">
+      <div class="modal-content">
+
+        <div class="modal__header">
+          <span class="modal__close">x</span>
+          <h5>Вы действительно хотите удалить викторину?</h5>
+        </div>
+
+        <div class="modal-body">
+          <form id="delete__form" method="POST">
+            {% csrf_token %}
+            <button class="btn btn-join modal__btn_delete" type="submit">
+              Удалить
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+    <!-- End modal -->
+
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="{% static 'js/manageQuizMenu.js' %}"></script>
+<script src="{% static 'js/deleteQuiz.js' %}"></script>
+<script src="{% static 'js/copyQuizLink.js' %}"></script>
+<script src="{% static 'js/quizLike.js' %}"></script>
+<script src="{% static 'js/quizBookmark.js' %}"></script>
+{% endblock %}
