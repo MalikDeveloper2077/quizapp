@@ -48,12 +48,6 @@
   </div>
   {% endfor %}
 
-  {% if page_obj.has_previous %}
-  <a class="question__back" href="?page={{ page_obj.previous_page_number }}">
-    <i class="fas fa-long-arrow-alt-left mr-1"></i> Назад
-  </a>
-  {% endif %}
-
 </div>
 {% endblock %}
 

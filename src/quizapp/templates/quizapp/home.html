@@ -2,11 +2,12 @@
 
 {% load static %}
 {% load humanize %}
+{% load crispy_forms_tags %}
 
 {% block title %}Главная{% endblock %}
 
 {% block links %}
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}" />
 {% endblock %}
 
 {% block content %}
@@ -18,18 +19,15 @@
 
       {% for quiz in quizzes %}
       <div class="quiz">
-
         <div class="quiz__usertitle-wrap">
           <h4 class="quiz__title mb-4">{{ quiz.title }}</h4>
 
           <div class="quiz__user">
-
             <!-- Manage list ul -->
             <div class="user__manage">
               <i class="fas fa-ellipsis-h mr-3 manage__menu"></i>
 
               <ul class="manage__list">
-
                 {% if user == quiz.author or user.is_staff %}
                 <a href="{{ quiz.get_update_url }}" class="list__item">
                   <i class="fas fa-pencil-alt"></i>
@@ -49,39 +47,32 @@
                     {{ current_url }}quiz/{{ quiz.slug}}
                   </p>
                 </a>
-
               </ul>
             </div>
             <!-- End of the manage list -->
 
-            <img src="/static/img/testuser.png" class="user__img" alt="Photo">
+            <img src="/static/img/testuser.png" class="user__img" alt="Photo" />
             <span class="user__username">{{ quiz.author.username }}</span>
-
           </div>
         </div>
 
         <span class="quiz__views quiz__views-home pr-2">
           <small>
             <i class="far fa-eye fa-eye-home"></i> {{ quiz.views|intcomma }}
-          </small>
-        </span>|
+          </small> </span>|
         <span class="quiz__date quiz__date-home">
-          <small>{{ quiz.date|naturaltime }}</small>
-        </span><br>
+          <small>{{ quiz.date|naturaltime }}</small> </span><br />
 
         <p class="quiz__body">
-          {% if quiz.body|length > 150 %}
-          {{ quiz.body|slice:':150' }}...<br />
+          {% if quiz.body|length > 150 %} {{ quiz.body|slice:':150' }}...<br />
           <a href="{{ quiz.get_absolute_url }}">
             <small>Читать полностью</small>
           </a>
-          {% else %}
-          {{ quiz.body }}
-          {% endif %}
+          {% else %} {{ quiz.body }} {% endif %}
         </p>
 
         {% if quiz.photo %}
-        <img src="{{ quiz.photo.url }}" class="quiz__photo" alt="Photo">
+        <img src="{{ quiz.photo.url }}" class="quiz__photo" alt="Photo" />
         {% endif %}
 
         <button type="button" class="quiz__level btn
@@ -126,7 +117,6 @@
         <a href="{{ quiz.get_absolute_url }}" class="mt-2 btn btn-join btn-block">
           Пройти
         </a>
-
       </div>
       {% endfor %}
 
@@ -152,7 +142,7 @@
           {% if n > page_obj.number|add:-4 and n < page_obj.number|add:4 %}
           <li class="page-item">
             <a class="page-link {% if n == page_obj.number %}
-                  active-pagination {% else %}no-active {% endif %}" href='?page={{ n }}'>{{ n }}</a>
+                      active-pagination {% else %}no-active {% endif %}" href="?page={{ n }}">{{ n }}</a>
           </li>
           {% endif %}
           {% endfor %}
@@ -180,17 +170,39 @@
 
 
     <!-- Right column of the filters -->
-    <div class="col-lg-4">
+    <div class="col-lg-4 filter-col">
+      <div class="filter-column">
 
+        <div class="filter">
 
+          <form method="GET" class="filter__form">
+            {{ filter_form|crispy }}
+            <input type="submit" class="btn btn-join" value="Найти" />
+          </form>
 
+        </div>
+
+        <div class="filter__links">
+
+          <a class="links__link {% if active == 'most_viewed' %}link__active{% endif %}" href="{% url 'most-viewed' %}">
+            <img class="link__img" src="{% static 'img/graph.png' %}" alt="Graph">
+            Популярное
+          </a>
+          <a class="links__link {% if active == 'most_liked' %}link__active{% endif %}" href="{% url 'most-liked' %}">
+            <img class="link__img" src="{% static 'img/fire.png' %}" alt="Fire">
+            Лучшее
+          </a>
+
+        </div>
+
+      </div>
     </div>
     <!-- End of the right column -->
+
 
     <!-- Modal for delete a quiz -->
     <div class="modal">
       <div class="modal-content">
-
         <div class="modal__header">
           <span class="modal__close">x</span>
           <h5>Вы действительно хотите удалить викторину?</h5>
@@ -204,11 +216,9 @@
             </button>
           </form>
         </div>
-
       </div>
     </div>
     <!-- End modal -->
-
   </div>
 </div>
 {% endblock %}

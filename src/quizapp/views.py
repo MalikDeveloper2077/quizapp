@@ -7,14 +7,45 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
+from django.db.models import Count
 
 from .models import Quiz, Question, QuizManager
 from .forms import QuizCreateForm, CommentCreateForm
+from .filters import QuizFilter
 from .for_slug import slugify as my_slugify
 
 
 class QuizList(ListView):
-    """List of quizzes + pagination"""
+    """List of quizzes"""
+    model = Quiz
+    template_name = 'quizapp/home.html'
+    context_object_name = 'quizzes'
+    paginate_by = 15
+
+    def get_context_data(self, **kwargs):
+        """Additional context.
+
+        active: for know which page was opened
+        current_url: absolute_url at a current page
+        filter: form for filtering quizzes
+
+        """
+        context = super().get_context_data(**kwargs)
+        context['active'] = 'list'
+        context['current_url'] = self.request.build_absolute_uri()
+        context['filter_form'] = QuizFilter(
+            self.request.GET, queryset=self.model.objects.all()
+        ).form
+        return context
+
+    def get_queryset(self):
+        qs = self.model.objects.all()
+        filtered_quizzes = QuizFilter(self.request.GET, queryset=qs)
+        return filtered_quizzes.qs
+
+
+class QuizListMostViewed(ListView):
+    """List of most viewed quizzes"""
     model = Quiz
     template_name = 'quizapp/home.html'
     context_object_name = 'quizzes'
@@ -22,9 +53,61 @@ class QuizList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['active'] = 'list'
+        context['active'] = 'most_viewed'
         context['current_url'] = self.request.build_absolute_uri()
+        context['filter_form'] = QuizFilter(
+            self.request.GET, queryset=self.model.objects.all()
+        ).form
         return context
+
+    def get_queryset(self):
+        qs = self.model.objects.order_by('-views')
+        filtered_quizzes = QuizFilter(self.request.GET, queryset=qs)
+        return filtered_quizzes.qs
+
+
+class QuizListMostLiked(ListView):
+    """List of most viewed quizzes"""
+    model = Quiz
+    template_name = 'quizapp/home.html'
+    context_object_name = 'quizzes'
+    paginate_by = 15
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['active'] = 'most_liked'
+        context['current_url'] = self.request.build_absolute_uri()
+        context['filter_form'] = QuizFilter(
+            self.request.GET, queryset=self.model.objects.all()
+        ).form
+        return context
+
+    def get_queryset(self):
+        qs = self.model.objects.all().annotate(cnt=Count('likes')).order_by('-cnt')
+        filtered_quizzes = QuizFilter(self.request.GET, queryset=qs)
+        return filtered_quizzes.qs
+
+
+class QuizUserList(ListView):
+    """List of most viewed quizzes"""
+    model = Quiz
+    template_name = 'quizapp/home.html'
+    context_object_name = 'quizzes'
+    paginate_by = 15
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['active'] = 'my_quizzes'
+        context['current_url'] = self.request.build_absolute_uri()
+        context['filter_form'] = QuizFilter(
+            self.request.GET, queryset=self.model.objects.all()
+        ).form
+        return context
+
+    def get_queryset(self):
+        qs = self.request.user.quizzes.all()
+        filtered_quizzes = QuizFilter(self.request.GET, queryset=qs)
+        return filtered_quizzes.qs
 
 
 class QuizDetail(View):

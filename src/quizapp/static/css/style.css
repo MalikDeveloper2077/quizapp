@@ -149,6 +149,7 @@ p {
 
 .quiz__likes_icon {
   transition: 0.3s;
+  cursor: pointer;
 }
 
 .like_animation {
@@ -164,6 +165,10 @@ p {
 .bookmarked {
   color: #f0d90a;
   transition: 0.4s;
+  -webkit-transition: 0.4s;
+  -moz-transition: 0.4s;
+  -ms-transition: 0.4s;
+  -o-transition: 0.4s;
 }
 
 .quiz__bookmarks {
@@ -172,6 +177,7 @@ p {
 
 .quiz__bookmarks_icon {
   transition: 0.4s;
+  cursor: pointer;
 }
 
 .bookmarks__btn {
@@ -280,6 +286,41 @@ p {
   display: flex;
   justify-content: center;
 }
+
+/* Right column */
+
+.filter__links {
+  margin-top: 55px;
+}
+
+.links__link {
+  transition: 0.4s;
+  display: block;
+  background-color: #262626;
+  color: #fff;
+  padding: 6px 12px;
+  -webkit-transition: 0.4s;
+  -moz-transition: 0.4s;
+  -ms-transition: 0.4s;
+  -o-transition: 0.4s;
+}
+
+.link__img {
+  width: 25px;
+  height: 25px;
+  margin-right: 8px;
+}
+
+.links__link:hover {
+  background-color: #323332;
+  color: #fff;
+  text-decoration: none;
+}
+
+.link__active {
+  background-color: #323332;
+}
+
 
 /* Pagination */
 
