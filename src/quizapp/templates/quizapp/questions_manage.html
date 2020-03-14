@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Управление вопросами{% endblock %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+{% endblock %}
+
+{% block content %}
+
+<div class="container manage_questions_container">
+    <div class="manage_questions">
+
+        <div class="questions__info">
+            <h4 class="info__count">Управление вопросами: {{ questions.count }}</h4>
+            <a href="#" class="btn btn-join">Добавить</a>
+        </div>
+
+        {% for question in questions %}
+    
+        <div class="manage_question">
+            <div class="row">
+                <div class="col-lg-10">
+                    {{ question.title }}
+                </div>
+                <div class="col-lg-2">
+                    <a href="#" class="btn btn-join btn-sm btn-explain">Править</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="manage_question_explain">
+            <label for="title">Название</label>
+            <input type="text" name="title" value="{{ question.title }}" class="explain__title">
+            
+            <div class="answers_input">
+                <div class="row">
+                    {% for answer in question.answers.all %}
+                    <div class="col-lg-3">
+                        <label for="{{ answer.pk }}">Вопрос #{{ forloop.counter }}</label>
+                        <input type="text" value="{{ answer.value }}" name="{{ answer.pk }}" 
+                            class="explain__value" required>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <hr>
+    
+        {% endfor %}
+    
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    let explainBtns = document.querySelectorAll('.btn-explain');
+
+    explainBtns.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            let manageMenu = this.parentNode.parentNode.parentNode.nextElementSibling;
+
+            if (manageMenu.style.display == 'block') {
+                manageMenu.style.display = 'none';
+            } else {
+                manageMenu.style.display = 'block'; 
+            }
+        })
+    })
+</script>
+{% endblock %}

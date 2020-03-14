@@ -1,18 +1,12 @@
-from time import time
-
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.core.exceptions import ValidationError
-from django.core.paginator import Paginator
 from django.db.models import Count
 
 from .models import Quiz, Question, QuizManager
 from .forms import QuizCreateForm, CommentCreateForm
 from .filters import QuizFilter
-from .for_slug import slugify as my_slugify
 
 
 class QuizList(ListView):
@@ -111,13 +105,14 @@ class QuizUserList(ListView):
 
 
 class QuizDetail(View):
-    """Detail of a quiz. Add 1 view to quiz.views"""
+    """Detail of a quiz. Call Quiz.increase_views() method"""
 
     def get(self, request, slug):
         quiz = get_object_or_404(Quiz, slug=slug)
         form = CommentCreateForm()
-        quiz.views += 1
-        quiz.save()
+
+        quiz.increase_views()
+
         ctx = {
             'quiz': quiz,
             'form': form
@@ -151,11 +146,16 @@ class QuizUpdate(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
 
 
 class QuestionList(ListView):
-    """List of quiz questions and paginate it by 1 page"""
+    """List of quiz questions
+
+    Template name and count for pagination get in url args
+
+    Url args:
+        slug(str): slug of a quiz which contains questions
+
+    """
     model = Question
-    template_name = 'quizapp/question_list.html'
     context_object_name = 'questions'
-    paginate_by = 1
 
     def get_queryset(self):
         quiz = get_object_or_404(Quiz, slug=self.kwargs['slug'])
@@ -168,8 +168,7 @@ class QuizComplete(View):
     """Complete a quiz.
 
     Get quiz via slug. Get QuizManager via quiz and request.user.
-    QuizManager.completed set to True and save.
-    Define result_state based on the number of correct answers.
+    Call QuizManager set_as_completed() and get_passing_status() methods
 
     Args:
         slug(str): quiz slug
@@ -177,36 +176,25 @@ class QuizComplete(View):
     Returns:
         correct_answers(int): number of correct answers from user in the quiz
         all_answers(int): number of all answers
-        result_state(str): end state of the quiz passing
+        passing_status(str): end status of the quiz passing
 
     """
 
     def get(self, request, slug):
         quiz = get_object_or_404(Quiz, slug=slug)
         quiz_manager = get_object_or_404(
-            QuizManager, quiz=quiz, user=request.user)
-        quiz_manager.completed = True
-        quiz_manager.save()
+            QuizManager,
+            quiz=quiz,
+            user=request.user
+        )
 
-        # TODO: increase user xp in the different if statements
-        if quiz_manager.correct_answers == quiz.get_questions_count():
-            result_state = 'awesome'
-
-        elif quiz_manager.correct_answers > quiz.get_questions_count() / 1.5 and \
-                quiz_manager.correct_answers < quiz.get_questions_count():
-            result_state = 'good'
-
-        elif quiz_manager.correct_answers > quiz.get_questions_count() / 2.5 and \
-                quiz_manager.correct_answers < quiz.get_questions_count() / 1.5:
-            result_state = 'normal'
-
-        else:
-            result_state = 'bad'
+        quiz_manager.set_as_completed()
+        passing_status = quiz_manager.get_passing_status(quiz)
 
         ctx = {
-            'correct_answers': quiz_manager.correct_answers,
+            'correct_answers': quiz_manager.get_correct_answers(),
             'all_answers': quiz.get_questions_count(),
-            'result_state': result_state
+            'passing_status': passing_status
         }
 
         return render(request, 'quizapp/quiz_complete.html', ctx)

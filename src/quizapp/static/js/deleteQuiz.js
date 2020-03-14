@@ -37,11 +37,15 @@ $(document).on('submit', '#delete__form', function(e) {
 
     $.ajax({
         type: 'DELETE',
-        url: `api/quiz/${slug}/delete/`,
+        url: `/api/quiz/${slug}/delete/`,
         data: {},
         headers:{"X-CSRFToken": csrf_token},
         success: function(data) {
-            quiz.style.display = 'none';
+            if ( window.location.href.includes('quiz/') ) {
+                window.location.replace('/')
+            } else {
+                quiz.style.display = 'none';
+            }
         },
         error: function(error) {
             console.log('error')

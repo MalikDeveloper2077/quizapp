@@ -12,3 +12,11 @@ class IsQuizOrCommentAuthor(permissions.BasePermission):
         if request.user.is_staff:
             return True
         return request.user == obj.author
+
+
+class IsQuizAuthorFromQuesiton(permissions.BasePermission):
+    """For checking if user is quiz author via question"""
+    def has_object_permission(self, request, view, obj):
+        if request.user.is_staff:
+            return True
+        return request.user == obj.quiz.author

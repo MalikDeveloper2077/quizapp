@@ -54,7 +54,7 @@
 
         <span class="quiz__bookmarks ml-3">
           <i class="fa-star quiz__bookmarks_icon
-          {% if user in quiz.get_bookmarks_users %}fas bookmarked{% else %}
+          {% if user.id in quiz.get_bookmarks_users %}fas bookmarked{% else %}
           far{% endif %}" data-slug="{{ quiz.slug }}"></i>
           <span class="quiz__bookmarks_count">
             {{ quiz.get_bookmarks_count }}
@@ -121,22 +121,59 @@
         <img src="/static/img/testuser.png" class="user__img" alt="Photo">
         <span class="user__username">{{ quiz.author.username }}</span><br>
 
-        <span class="quiz__views quiz__views_detail mt-4">
-          <i class="far fa-eye mr-1"></i> {{ quiz.views|intcomma }}
+        <span class="quiz__views quiz__views_detail mt-4" title="Просмотры">
+          <i class="far fa-eye mr-1"></i> {{ quiz.views }}
         </span><br>
 
-        <span class="quiz__date quiz__date_detail mt-1">
+        <span class="quiz__date quiz__date_detail mt-1" title="Дата">
           <i class="far fa-clock"></i> {{ quiz.date|naturaltime }}
         </span>
 
         <p class="quiz__completed mt-4">
-          Пройдено: {{ quiz.get_completed_count }}
+          Пройдено: {{ quiz.get_completed_count }}<br>
+          Вопросов: {{ quiz.get_questions_count }}
         </p>
+
+        {% if quiz.author == user %}
+        <div class="manage_buttons">
+          <div class="btns_string">
+            <a href="{{ quiz.get_update_url }}" class="btn btn-join manage_buttons__btn">Править</a>
+            <a href="#" data-slug="{{ quiz.slug }}" class="btn btn-join list__item_delete manage_buttons__btn">
+              <span class="item__span">Удалить</span>
+            </a>
+          </div>
+
+          <a href="{{ quiz.get_manage_questions_url }}" class="btn btn-join btn-block btn-add">
+            Управление вопросами
+          </a>
+        </div>
+        {% endif %}
 
       </div>
       <!-- End right column -->
 
     </div>
+
+    <!-- Modal for delete a quiz -->
+    <div class="modal">
+      <div class="modal-content">
+        <div class="modal__header">
+          <span class="modal__close">x</span>
+          <h5>Вы действительно хотите удалить викторину?</h5>
+        </div>
+
+        <div class="modal-body">
+          <form id="delete__form" method="POST">
+            {% csrf_token %}
+            <button class="btn btn-join modal__btn_delete" type="submit">
+              Удалить
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- End modal -->
+
   </section>
 
 </div>
@@ -145,6 +182,7 @@
 {% block js %}
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="{% static 'js/deleteQuiz.js' %}"></script>
 <script>
   $(document).on('submit', '.comments__form', function (e) {
     e.preventDefault();

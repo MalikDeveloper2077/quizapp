@@ -106,7 +106,7 @@
 
           <span class="quiz__bookmarks ml-3">
             <i class="fa-star quiz__bookmarks_icon
-            {% if user in quiz.get_bookmarks_users %}fas bookmarked{% else %}
+            {% if user.id in quiz.get_bookmarks_users %}fas bookmarked{% else %}
             far{% endif %}" data-slug="{{ quiz.slug }}"></i>
             <span class="quiz__bookmarks_count">
               {{ quiz.get_bookmarks_count }}

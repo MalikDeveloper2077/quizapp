@@ -1,11 +1,11 @@
-from django.shortcuts import render, get_object_or_404
-from django.urls import reverse
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
 from rest_framework.permissions import IsAuthenticated
 
-from quizapp.models import Quiz, Comment, Bookmark, QuestionAnswer, QuizManager
+from quizapp.models import (Quiz, Comment, Bookmark, QuestionAnswer,
+                            QuizManager)
 from .serializers import CommentSerializer
 from .permissions import IsQuizOrCommentAuthor
 
@@ -24,7 +24,7 @@ class CommentDeleteAPI(generics.DestroyAPIView):
 
 
 class CommentCreateAPI(generics.CreateAPIView):
-    """API for creating a quiz comment. 
+    """API for creating a quiz comment.
 
     Get a quiz slug kwarg. Find the quiz via slug and
     Save serializer with author=request.user and quiz=quiz
@@ -48,8 +48,7 @@ class QuizLikeUnlikeAPI(APIView):
         slug(str): quiz slug for finding the quiz
 
     Returns:
-        liked(bool): if user liked the quiz True otherwise False
-        likes(int): count of quiz likes
+        data(dict): contains returned data from quiz.like_quiz() method
         response status 200
 
     """
@@ -57,16 +56,7 @@ class QuizLikeUnlikeAPI(APIView):
 
     def get(self, request):
         quiz = get_object_or_404(Quiz, slug=request.GET['slug'])
-        data = {}
-
-        if request.user in quiz.likes.all():
-            quiz.likes.remove(request.user)
-            data['liked'] = False
-        else:
-            quiz.likes.add(request.user)
-            data['liked'] = True
-
-        data['likes'] = quiz.get_likes_count()
+        data = quiz.like_quiz(quiz, request.user)
 
         return Response(data, status=status.HTTP_200_OK)
 
@@ -81,8 +71,7 @@ class CreateRemoveBookmarkAPI(APIView):
         slug(str): slug of the quiz
 
     Returns:
-        bookmarked(bool): if user bookmarked the quiz True otherwise False
-        bookmarks(int): count of quiz bookmarks
+        data(dict): contains returned data from quiz.bookmark_quiz() method
         response status 200
 
     """
@@ -91,31 +80,24 @@ class CreateRemoveBookmarkAPI(APIView):
     def post(self, request):
         quiz = get_object_or_404(Quiz, slug=request.data['slug'])
         bookmark = Bookmark.objects.filter(quiz=quiz, user=request.user)
-        data = {}
 
-        if bookmark.exists():
-            bookmark.delete()
-            data['bookmarked'] = False
-        else:
-            Bookmark.objects.create(quiz=quiz, user=request.user)
-            data['bookmarked'] = True
-
-        data['bookmarks'] = quiz.get_bookmarks_count()
+        data = quiz.bookmark_quiz(quiz, request.user, bookmark)
 
         return Response(data, status=status.HTTP_200_OK)
 
 
 class CheckAnswerAPI(APIView):
-    """API for checking answers. 
+    """API for checking answers.
 
     Find the quiz with given slug.
     Get a pk from the GET data and find the answer.
 
-    If a user already completed the quiz set correct_answers = 0
-    and completed = False, save it. User will pass the quiz from scratchю
+    If a user already completed the quiz call QuizManager.set_as_uncompleted()
+    and remove_correct_answers().
+    User will pass the quiz from scratch.
 
-    Check if the answer is correct -> increase the quiz manager 
-    correct_answers by 1 and save it.
+    Check if the answer is correct -> increase the quiz manager
+    correct_answers by QuizManager.increase_correct_answers().
 
     Args:
         slug(str): slug of the quiz question
@@ -138,13 +120,13 @@ class CheckAnswerAPI(APIView):
             user=request.user
         )
 
+        # Reset parameters if quiz is completed
         if quiz_manager.completed:
-            quiz_manager.correct_answers = 0
-            quiz_manager.completed = False
-            quiz_manager.save()
+            quiz_manager.set_as_uncompleted()
+            quiz_manager.remove_correct_answers()
 
+        # Increase correct answers if answer is correct
         if answer.is_correct:
-            quiz_manager.correct_answers += 1
-            quiz_manager.save()
+            quiz_manager.increase_correct_answers()
 
         return Response({'checked': True}, status=status.HTTP_200_OK)

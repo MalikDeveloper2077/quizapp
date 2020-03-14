@@ -16,15 +16,7 @@
 
             <div class="congratulation">
                 <h1 class="complete__title">
-                    {% if result_state == 'awesome' %}
-                    Потрясающе 😍
-                    {% elif result_state == 'good' %}
-                    Отлично 👍
-                    {% elif result_state == 'normal' %}
-                    Неплохо 😁
-                    {% else %}
-                    Не огорчайся 😕
-                    {% endif %}
+                    {{ passing_status }}
                 </h1>
                 <span class="complete__span_count">Ты ответил на:</span>
                 <h2 class="complete__count">{{ correct_answers }} из {{ all_answers }}</h2>
