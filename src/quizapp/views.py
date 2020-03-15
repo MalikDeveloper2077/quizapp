@@ -168,7 +168,10 @@ class QuizComplete(View):
     """Complete a quiz.
 
     Get quiz via slug. Get QuizManager via quiz and request.user.
-    Call QuizManager set_as_completed() and get_passing_status() methods
+    Call QuizManager and Profile methods to complete the quiz,
+    get result status, and increase_xp.
+    If profile level need to upgrade call Profile.get_next_level
+    and Profile.level_up()
 
     Args:
         slug(str): quiz slug
@@ -177,6 +180,8 @@ class QuizComplete(View):
         correct_answers(int): number of correct answers from user in the quiz
         all_answers(int): number of all answers
         passing_status(str): end status of the quiz passing
+        increased_xp(int): xp that was increased
+        level_up(bool): if profile.level_up was called True else False
 
     """
 
@@ -188,13 +193,26 @@ class QuizComplete(View):
             user=request.user
         )
 
+        # Complete and increase xp
         quiz_manager.set_as_completed()
         passing_status = quiz_manager.get_passing_status(quiz)
+        required_xp = quiz_manager.calculate_required_xp_count(passing_status)
+        request.user.profile.increase_xp(required_xp)
+
+        # Level up if necessary
+        level_up = False
+
+        if request.user.profile.check_level_up():
+            next_level = request.user.profile.get_next_level()
+            request.user.profile.level_up(next_level)
+            level_up = True
 
         ctx = {
             'correct_answers': quiz_manager.get_correct_answers(),
             'all_answers': quiz.get_questions_count(),
-            'passing_status': passing_status
+            'passing_status': passing_status,
+            'increased_xp': required_xp,
+            'level_up': level_up
         }
 
         return render(request, 'quizapp/quiz_complete.html', ctx)

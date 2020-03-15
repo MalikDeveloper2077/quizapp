@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.conf import settings
 from django.urls import reverse
 from django.db.models import F
@@ -66,7 +65,8 @@ class Quiz(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        """Use the custom slugify (for_slug.py) and add
+        """
+        Use the custom slugify (for_slug.py) and add
         generated slug + self.id in self.slug
         """
         slug = my_slugify(self.title)
@@ -101,7 +101,7 @@ class Quiz(models.Model):
         return self.questions.count()
 
     def get_bookmarks_users(self):
-        """Get all users id who bookmarked the quiz"""
+        """Return all users id who bookmarked the quiz"""
         users_id = []
 
         for bookmark in self.bookmarks.values('user'):
@@ -115,14 +115,14 @@ class Quiz(models.Model):
         If bookmark is exists -> delete else create
 
         Args:
-            quiz(obj): quiz to be (un)bookmarked
-            user(obj): user who want to (un)bookmark the quiz
-            bookmark(obj): queryset to find a bookmark
+            quiz(obj): a quiz to be (un)bookmarked
+            user(obj): a user who want to (un)bookmark the quiz
+            bookmark(obj): a queryset to find a bookmark
 
         Returns:
             data(dict):
-                bookmarked(bool): quiz was bookmarked - True else False
-                bookmarks(int): count of all bookmarks at the quiz
+                bookmarked(bool): the quiz was bookmarked - True else False
+                bookmarks(int): a count of all bookmarks at the quiz
 
         """
         data = {}
@@ -141,11 +141,11 @@ class Quiz(models.Model):
     def like_quiz(self, quiz, user):
         """Like a quiz
 
-        If user already liked the quiz -> remove it else add like
+        If a user already liked the quiz -> remove it else add like
 
         Args:
-            quiz(obj): quiz to be (un)liked
-            user(obj): user who want to (un)like the quiz
+            quiz(obj): a quiz to be (un)liked
+            user(obj): a user who want to (un)like the quiz
 
         Returns:
             data(dict):
@@ -173,11 +173,11 @@ class Quiz(models.Model):
 
 
 class QuizManager(models.Model):
-    """Manager for a quiz. Create when a user starts a quiz.
+    """Manager for a quiz
 
-    Attributes:
-        correct_answers(int): stores correct answers.
-        completed(boolean): state of a quiz passing.
+    Important attributes:
+        correct_answers(int): stores a count of correct answers.
+        completed(boolean): status of a quiz passing.
 
     """
     quiz = models.ForeignKey(
@@ -244,7 +244,6 @@ class QuizManager(models.Model):
             status(str): result status of the passing
 
         """
-        # TODO: increase user xp in the different if statements
         if self.correct_answers == quiz.get_questions_count():
             status = 'Потрясающе 😍'
 
@@ -260,6 +259,30 @@ class QuizManager(models.Model):
             status = 'Не огорчайся 😕'
 
         return status
+
+    def calculate_required_xp_count(self, passing_status: str):
+        """Calculate the required xp count
+
+        Check passing_status and define xp_count
+        depending on the passing status
+
+        Args:
+            passing_status(str): status of the quiz passing
+
+        Returns:
+            xp_count(int): the amount of xp needed to increase it
+
+        """
+        if passing_status == 'Потрясающе 😍':
+            xp_count = 100
+        elif passing_status == 'Отлично 👍':
+            xp_count = 75
+        elif passing_status == 'Неплохо 😁':
+            xp_count = 50
+        else:
+            xp_count = 10
+
+        return xp_count
 
 
 class Category(models.Model):
@@ -290,7 +313,9 @@ class Comment(models.Model):
     )
     body = models.TextField('Текст')
     date = models.DateTimeField(
-        auto_now_add=True, verbose_name='Дата создания')
+        'Дата создания',
+        auto_now_add=True
+    )
 
     class Meta:
         verbose_name = 'Комментарий'
@@ -316,7 +341,9 @@ class Bookmark(models.Model):
         related_name='bookmarks'
     )
     date = models.DateTimeField(
-        auto_now_add=True, verbose_name='Дата добавления')
+        'Дата добавления',
+        auto_now_add=True
+    )
 
     class Meta:
         verbose_name = 'Закладка'

@@ -22,20 +22,18 @@
                 <h2 class="complete__count">{{ correct_answers }} из {{ all_answers }}</h2>
             </div>
 
-            <!-- TODO: add real parameters -->
-
             <div class="row complete__parameters">
                 <div class="col-lg-6">
                     <h5 class="complete__xp">
-                        <span class="complete__span">Опыт XP:</span> 2320
+                        <span class="complete__span">Опыт XP:</span> {{ user.profile.xp }}
                     </h5>
                     <h5 class="complete__level">
-                        <span class="complete__span">Уровень:</span> Острый козырёк</h5>
+                        <span class="complete__span">Уровень:</span> {{ user.profile.level }}</h5>
                 </div>
 
                 <div class="col-lg-6 complete__plus">
-                    <h5 class="complete__xp_green">+ 54</h5>
-                    <h5 class="complete__level_green">+ Новый уровень</h5>
+                    <h5 class="complete__xp_green">+ {{ increased_xp }}</h5>
+                    <h5 class="complete__level_green">{% if level_up %}+ Новый уровень{% endif %}</h5>
                 </div>
             </div>
 
