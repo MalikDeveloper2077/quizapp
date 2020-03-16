@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="forbidden mt-5" style="text-align: center">
+    <h2>У вас нет прав доступа</h2>
+    <img src="{% static 'img/forbidden.png' %}" class="mt-5" style="max-width: 100%">
+</div>
+{% endblock %}
