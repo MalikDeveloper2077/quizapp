@@ -20,7 +20,8 @@ class Quiz(models.Model):
         'Url-адрес',
         max_length=60,
         unique=True,
-        db_index=True
+        db_index=True,
+        blank=True
     )
     title = models.CharField('Название', max_length=50)
     body = models.TextField('Описание', blank=True)
@@ -173,11 +174,12 @@ class Quiz(models.Model):
 
 
 class QuizManager(models.Model):
-    """Manager for a quiz
+    """Manager for a quiz. NOT DJANGO MANAGER
 
     Important attributes:
         correct_answers(int): stores a count of correct answers.
-        completed(boolean): status of a quiz passing.
+        completed(bool): status of a quiz passing.
+        passed(bool): if a quiz was passed ever -> True, default False
 
     """
     quiz = models.ForeignKey(
@@ -200,6 +202,7 @@ class QuizManager(models.Model):
         default=0
     )
     completed = models.BooleanField('Завершено', default=False)
+    passed = models.BooleanField('Когда-либо пройдено', default=False)
 
     class Meta:
         verbose_name = 'Менеджер викторины'
@@ -230,6 +233,11 @@ class QuizManager(models.Model):
         """Set the completed field to False"""
         self.completed = False
         self.save(update_fields=('completed',))
+
+    def set_as_passed(self):
+        """Set the passed field to True"""
+        self.passed = True
+        self.save(update_fields=('passed',))
 
     def get_passing_status(self, quiz):
         """Return the quiz passing status.

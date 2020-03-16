@@ -122,8 +122,8 @@ class CheckAnswerAPI(APIView):
 
         # Reset parameters if quiz is completed
         if quiz_manager.completed:
-            quiz_manager.set_as_uncompleted()
             quiz_manager.remove_correct_answers()
+            quiz_manager.set_as_uncompleted()
 
         # Increase correct answers if answer is correct
         if answer.is_correct:

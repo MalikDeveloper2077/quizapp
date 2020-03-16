@@ -72,6 +72,10 @@ class Profile(models.Model):
 
     def check_level_up(self):
         """Check if the user level should be upgraded"""
+        # If the user level is last
+        if self.level == LEVEL_CHOICES[-1][0]:
+            return False
+
         for lvl in LEVEL_XP_VALUES:
             if self.level == lvl[0]:
                 # lvl is the current user level

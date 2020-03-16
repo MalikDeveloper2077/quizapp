@@ -168,10 +168,9 @@ class QuizComplete(View):
     """Complete a quiz.
 
     Get quiz via slug. Get QuizManager via quiz and request.user.
-    Call QuizManager and Profile methods to complete the quiz,
-    get result status, and increase_xp.
-    If profile level need to upgrade call Profile.get_next_level
-    and Profile.level_up()
+    Call QuizManager and Profile methods to increase the xp and
+    set as completed and passed if the quiz hadn't completed.
+    Level up if Profile.check_level_up() returns true.
 
     Args:
         slug(str): quiz slug
@@ -193,19 +192,27 @@ class QuizComplete(View):
             user=request.user
         )
 
-        # Complete and increase xp
-        quiz_manager.set_as_completed()
+        # Get the result passing status
         passing_status = quiz_manager.get_passing_status(quiz)
-        required_xp = quiz_manager.calculate_required_xp_count(passing_status)
-        request.user.profile.increase_xp(required_xp)
-
-        # Level up if necessary
+        required_xp = 0
         level_up = False
 
-        if request.user.profile.check_level_up():
-            next_level = request.user.profile.get_next_level()
-            request.user.profile.level_up(next_level)
-            level_up = True
+        if not quiz_manager.passed:
+            # Increase the xp
+            required_xp = quiz_manager.calculate_required_xp_count(
+                passing_status
+            )
+            request.user.profile.increase_xp(required_xp)
+
+            # Level up if necessary
+            if request.user.profile.check_level_up():
+                next_level = request.user.profile.get_next_level()
+                request.user.profile.level_up(next_level)
+                level_up = True
+
+            # Set the quiz manager as completed and passed
+            quiz_manager.set_as_completed()
+            quiz_manager.set_as_passed()
 
         ctx = {
             'correct_answers': quiz_manager.get_correct_answers(),
